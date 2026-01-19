@@ -38,7 +38,6 @@ export function DestinationsInput( props: DestinationsInputProps ) {
 			<FormTokenField
 				disabled={ disabled }
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				label={ translate( 'Forward to' ) }
 				onChange={ handleChange }
 				value={ values.slice( 0, limit ) }

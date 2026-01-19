@@ -61,7 +61,6 @@ function VatSelectControl( { data, field, onChange }: UserTaxFormControlProps ) 
 	return (
 		<SelectControl
 			__next40pxDefaultSize
-			__nextHasNoMarginBottom
 			disabled={ isDisabled || ( isVatAlreadySet && ! canUserEdit ) || elements?.length === 0 }
 			label={ label }
 			value={ getValue( { item: data } ) }

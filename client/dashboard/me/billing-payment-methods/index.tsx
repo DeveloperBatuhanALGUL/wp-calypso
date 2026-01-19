@@ -352,7 +352,6 @@ function getFields( {
 			render: ( { item }: { item: StoredPaymentMethod } ) => {
 				return (
 					<ToggleControl
-						__nextHasNoMarginBottom
 						label=""
 						checked={ item.is_backup }
 						disabled={

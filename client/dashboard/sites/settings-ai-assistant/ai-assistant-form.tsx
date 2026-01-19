@@ -266,7 +266,6 @@ export function AIAssistantForm( { site }: { site: Site } ) {
 							{ USE_CASE_OPTIONS.map( ( option ) => (
 								<div key={ option.value }>
 									<CheckboxControl
-										__nextHasNoMarginBottom
 										label={ option.label }
 										checked={ selectedUseCases.has( option.value ) }
 										onChange={ ( checked ) => handleUseCaseChange( option.value, checked ) }

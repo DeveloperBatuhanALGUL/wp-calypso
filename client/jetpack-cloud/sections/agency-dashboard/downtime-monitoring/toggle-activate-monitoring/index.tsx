@@ -146,7 +146,6 @@ export default function ToggleActivateMonitoring( {
 			checked={ isChecked }
 			disabled={ isLoading || siteError || site.sticker?.includes( 'migration-in-progress' ) }
 			label={ isChecked && currentSettings() }
-			__nextHasNoMarginBottom
 		/>
 	);
 

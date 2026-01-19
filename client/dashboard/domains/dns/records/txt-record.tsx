@@ -30,7 +30,6 @@ export const TXTRecordConfig: DnsRecordConfig = {
 
 				return (
 					<TextareaControl
-						__nextHasNoMarginBottom
 						value={ getValue( { item: data } ) || '' }
 						onChange={ ( value ) => onChange( { [ id ]: value } ) }
 						placeholder={ field.placeholder }

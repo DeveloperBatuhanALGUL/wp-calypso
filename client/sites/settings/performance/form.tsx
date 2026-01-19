@@ -173,7 +173,6 @@ export default function CachingForm( { disabled }: CachingFormProps ) {
 							} ) }
 						</PanelCardHeading>
 						<ToggleControl
-							__nextHasNoMarginBottom
 							className="cache-card__edge-cache-toggle"
 							checked={ isEdgeCacheActive && isEdgeCacheEligible }
 							disabled={ isClearingEdgeCache || isEdgeCacheLoading || ! isEdgeCacheEligible }

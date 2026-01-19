@@ -40,7 +40,6 @@ const NotificationSettingsFormActions = ( {
 		>
 			{ props.isApplyAllVisible && (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ savingTarget === 'all' }
 					disabled={ disabled || !! isFetching }
 					label={ translate( 'Apply these settings to all my sites' ) }

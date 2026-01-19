@@ -116,7 +116,6 @@ const RepositorySelector = ( {
 			<div ref={ comboboxRef }>
 				<ComboboxControl
 					__next40pxDefaultSize
-					__nextHasNoMarginBottom
 					allowReset
 					expandOnFocus={ false }
 					value={ currentValue === '' ? '' : currentValue?.toString() || '' }
@@ -186,7 +185,6 @@ const GithubAccountSelector = ( {
 			</HStack>
 			<SelectControl
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				aria-label={ __( 'GitHub account' ) }
 				value={ getValue?.( { item: data } ) }
 				onChange={ ( value ) => {
@@ -214,7 +212,6 @@ const AutomatedToggle = ( {
 
 	return (
 		<ToggleControl
-			__nextHasNoMarginBottom
 			label={ hideLabelFromVision ? '' : field.label }
 			checked={ currentValue }
 			onChange={ ( value ) => onChange( { [ id ]: value } ) }

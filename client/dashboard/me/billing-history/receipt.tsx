@@ -169,7 +169,6 @@ function ReceiptDetails( { receipt }: { receipt: Receipt } ) {
 						value={ billingDetailsText }
 						onChange={ setBillingDetailsText }
 						className="receipt-text-control"
-						__nextHasNoMarginBottom
 					/>
 					<Text variant="muted" size={ 11 }>
 						{ __(

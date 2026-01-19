@@ -22,7 +22,6 @@ export const SettingsPanel = ( { options, onChange, disabled }: Props ) => {
 				{ options.map( ( item ) => (
 					<ToggleControl
 						disabled={ disabled }
-						__nextHasNoMarginBottom
 						className="stream-settings__toggle"
 						key={ item.id }
 						label={ item.label }

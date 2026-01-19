@@ -93,7 +93,6 @@ export const AdvancedWorkflowStyle = ( {
 					disabled={ isLoading }
 					options={ workflowOptions }
 					__next40pxDefaultSize
-					__nextHasNoMarginBottom
 				/>
 
 				<Text variant="muted">

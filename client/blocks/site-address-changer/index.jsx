@@ -515,7 +515,6 @@ export class SiteAddressChanger extends Component {
 					label={ translate( "I understand that I won't be able to undo this change." ) }
 					checked={ this.state.isConfirmationChecked }
 					onChange={ this.toggleConfirmationChecked }
-					__nextHasNoMarginBottom
 				/>
 			</form>
 		);

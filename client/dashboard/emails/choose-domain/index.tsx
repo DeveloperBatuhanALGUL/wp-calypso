@@ -81,7 +81,6 @@ export default function ChooseDomain() {
 							{ remaining.length > 0 && (
 								<Item>
 									<SearchControl
-										__nextHasNoMarginBottom
 										className="searchbox"
 										value={ search }
 										onChange={ setSearch }

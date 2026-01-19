@@ -567,7 +567,6 @@ function getFields( {
 				} )();
 				return (
 					<ToggleControl
-						__nextHasNoMarginBottom
 						className="purchase-settings__toggle-control"
 						label={
 							shouldAllowExpiredAutoRenewToggle( purchase )

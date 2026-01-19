@@ -219,7 +219,6 @@ function McpComponent( { path } ) {
 							{ tools.map( ( [ toolId, tool ] ) => (
 								<ToggleControl
 									key={ toolId }
-									__nextHasNoMarginBottom
 									checked={ tool.enabled }
 									disabled={ mutation.isPending }
 									label={ tool.title }
@@ -260,7 +259,6 @@ function McpComponent( { path } ) {
 								} }
 							>
 								<ToggleControl
-									__nextHasNoMarginBottom
 									checked={ anyToolsEnabled }
 									onChange={ handleMasterToggle }
 									label={
@@ -307,7 +305,6 @@ function McpComponent( { path } ) {
 
 								{ selectedSiteId && anyToolsEnabled && (
 									<ToggleControl
-										__nextHasNoMarginBottom
 										checked={ getSiteAccountToolsEnabled( userSettings || {}, selectedSiteId ) }
 										disabled={ mutation.isPending }
 										onChange={ ( enabled ) => handleSiteToggle( selectedSiteId, enabled ) }

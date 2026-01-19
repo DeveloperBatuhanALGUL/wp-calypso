@@ -36,7 +36,6 @@ class StreamOptions extends PureComponent {
 						<li className="notification-settings-form-stream-options__item" key={ index }>
 							{ isException ? null : (
 								<CheckboxControl
-									__nextHasNoMarginBottom
 									disabled={ this.props.isFetching }
 									checked={ get( this.props.settings, setting ) }
 									onChange={ () => {

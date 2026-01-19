@@ -118,7 +118,6 @@ export default function SftpCard( {
 					<BaseControl
 						label={ field.label }
 						help={ __( 'To maintain security, you must reset your password to view it.' ) }
-						__nextHasNoMarginBottom
 						children={ null }
 					/>
 				);

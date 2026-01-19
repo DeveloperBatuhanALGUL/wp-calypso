@@ -38,7 +38,6 @@ export const SiteListSettings = () => {
 				value={ search }
 				placeholder={ __( 'Search for a site' ) }
 				onChange={ handleSearchChange }
-				__nextHasNoMarginBottom
 			/>
 			<VStack spacing={ 4 }>
 				{ filteredSites.map( ( site: Site ) => (

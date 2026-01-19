@@ -136,7 +136,6 @@ export const DomainSearchControlsFilterPopover = ( {
 				<VStack spacing={ 4 }>
 					<FormTokenField
 						__next40pxDefaultSize
-						__nextHasNoMarginBottom
 						__experimentalShowHowTo={ false }
 						__experimentalValidateInput={ validateTld }
 						value={ temporaryFilter.tlds }
@@ -157,7 +156,6 @@ export const DomainSearchControlsFilterPopover = ( {
 						label={ __( 'Show exact matches only' ) }
 						checked={ temporaryFilter.exactSldMatchesOnly }
 						onChange={ setExactMatchesOnlyInFilter }
-						__nextHasNoMarginBottom
 					/>
 					<HStack spacing={ 4 } className="domain-search-controls__filters-popover-buttons">
 						<Button __next40pxDefaultSize variant="secondary" onClick={ onClear }>

@@ -63,7 +63,6 @@ const FlexSiteCreation: StepType< {
 								placeholder={ __( 'Enter site name' ) }
 								// eslint-disable-next-line jsx-a11y/no-autofocus
 								autoFocus
-								__nextHasNoMarginBottom
 							/>
 						</FormFieldset>
 

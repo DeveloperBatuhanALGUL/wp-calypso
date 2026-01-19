@@ -220,7 +220,7 @@ export default function SshCard( {
 	};
 
 	const SshKeysControl = < Item, >( { field }: DataFormControlProps< Item > ) => (
-		<BaseControl label={ field.label } __nextHasNoMarginBottom>
+		<BaseControl label={ field.label }>
 			<VStack>
 				{ siteSshKeys?.map( ( siteSshKey: SiteSshKey ) => (
 					<SshKeyCard
@@ -279,7 +279,6 @@ export default function SshCard( {
 							} )
 						}
 						__next40pxDefaultSize
-						__nextHasNoMarginBottom
 						hideLabelFromVision={ hideLabelFromVision }
 					/>
 				);
@@ -330,7 +329,6 @@ export default function SshCard( {
 						checked={ sshEnabled }
 						disabled={ toggleSshAccessMutation.isPending }
 						onChange={ handleToggleSshAccess }
-						__nextHasNoMarginBottom
 					/>
 					{ sshEnabled && (
 						<DataForm< SshCardFormData >

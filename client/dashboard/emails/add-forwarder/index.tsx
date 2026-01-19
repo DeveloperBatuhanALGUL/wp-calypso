@@ -269,7 +269,6 @@ function AddEmailForwarder() {
 
 								<FormTokenField
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									label={ __( 'Forward to' ) }
 									onInputChange={ ( val ) => {
 										setUntokenizedInput( val );

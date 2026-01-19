@@ -240,7 +240,6 @@ export const SftpForm = ( { disabled }: SftpFormProps ) => {
 		return (
 			<div className="sftp-card__ssh-field">
 				<ToggleControl
-					__nextHasNoMarginBottom
 					disabled={ isLoading || isSshAccessLoading }
 					checked={ isSshAccessEnabled }
 					onChange={ handleToggleSshAccess }

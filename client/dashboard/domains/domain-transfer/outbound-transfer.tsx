@@ -146,7 +146,6 @@ export default function OutboundTransfer( { domain }: { domain: Domain } ) {
 		return (
 			<HStack alignment="left">
 				<ToggleControl
-					__nextHasNoMarginBottom
 					checked={ domain.is_locked ?? false }
 					onChange={ ( checked ) => handleToggleChange( checked ) }
 					disabled={ disabled }

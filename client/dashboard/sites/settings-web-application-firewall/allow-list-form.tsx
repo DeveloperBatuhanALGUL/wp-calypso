@@ -30,7 +30,6 @@ const fields: Field< JetpackSettings >[] = [
 			const { id, getValue } = field;
 			return (
 				<TextareaControl
-					__nextHasNoMarginBottom
 					disabled={ ! data.jetpack_waf_ip_allow_list_enabled }
 					// eslint-disable-next-line @wordpress/i18n-hyphenated-range
 					help={ __(

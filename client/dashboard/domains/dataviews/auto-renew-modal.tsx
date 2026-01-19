@@ -64,7 +64,6 @@ export const AutoRenewModal = ( { items, onSuccess }: AutoRenewModalProps ) => {
 				checked={ autoRenewalStatus === 'all-enabled' }
 				indeterminate={ autoRenewalStatus === 'mixed' }
 				onChange={ ( value ) => setAutoRenewalStatus( value ? 'all-enabled' : 'all-disabled' ) }
-				__nextHasNoMarginBottom
 				help={ __( 'Note: Changes may take a few minutes to appear on the dashboard' ) }
 			/>
 			<HStack justify="flex-end">

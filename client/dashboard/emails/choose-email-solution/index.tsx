@@ -178,7 +178,6 @@ export default function ChooseEmailSolution() {
 			{ /* Billing interval selector */ }
 			<ToggleGroupControl
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				isBlock
 				label={ __( 'Billing interval' ) }
 				hideLabelFromVision

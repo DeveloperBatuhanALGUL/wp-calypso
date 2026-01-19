@@ -59,7 +59,6 @@ export function BundlePriceSelector( { options, value, onChange }: Props ) {
 	return (
 		<SelectControl
 			__next40pxDefaultSize
-			__nextHasNoMarginBottom
 			label={ translate( 'Bundle size' ) }
 			labelPosition="side"
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment

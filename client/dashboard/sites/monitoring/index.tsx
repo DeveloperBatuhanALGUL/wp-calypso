@@ -127,7 +127,6 @@ function SiteMonitoring() {
 							<ToggleGroupControl
 								value={ timeRange }
 								isBlock
-								__nextHasNoMarginBottom
 								__next40pxDefaultSize
 								onChange={ handleTimeRangeChange }
 								label={ __( 'Time period' ) }

@@ -22,12 +22,7 @@ export default function TermPricingToggle() {
 			<Text as="span" variant={ isChecked ? 'muted' : undefined } style={ { marginInline: '8px' } }>
 				{ __( 'Monthly' ) }
 			</Text>
-			<ToggleControl
-				__nextHasNoMarginBottom
-				checked={ isChecked }
-				onChange={ handleToggle }
-				label={ undefined }
-			/>
+			<ToggleControl checked={ isChecked } onChange={ handleToggle } label={ undefined } />
 			<Text as="span" variant={ ! isChecked ? 'muted' : undefined }>
 				{ __( 'Yearly' ) }
 			</Text>

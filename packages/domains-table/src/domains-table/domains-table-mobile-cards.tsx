@@ -23,7 +23,6 @@ export const DomainsTableMobileCards = () => {
 					<div className="domains-table-mobile-cards-select-all">
 						<CheckboxControl
 							data-testid="domains-select-all-checkbox"
-							__nextHasNoMarginBottom
 							onChange={ changeBulkSelection }
 							indeterminate={ bulkSelectionStatus === 'some-domains' }
 							checked={ bulkSelectionStatus === 'all-domains' }

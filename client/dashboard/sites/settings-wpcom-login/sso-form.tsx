@@ -37,7 +37,6 @@ const fields: Field< WpcomLoginFormData >[] = [
 			const { getValue, id, label } = field;
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ getValue( { item: data } ) || false }
 					disabled={ ! data.sso }
 					label={ hideLabelFromVision ? '' : label }
@@ -55,7 +54,6 @@ const fields: Field< WpcomLoginFormData >[] = [
 			const { getValue, id, label } = field;
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ getValue( { item: data } ) || false }
 					disabled={ ! data.sso }
 					label={ hideLabelFromVision ? '' : label }

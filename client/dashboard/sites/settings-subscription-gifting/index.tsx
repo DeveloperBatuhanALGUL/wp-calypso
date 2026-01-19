@@ -25,7 +25,6 @@ const fields: Field< SiteSettings >[] = [
 			const { id, getValue } = field;
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					label={ hideLabelFromVision ? '' : field.label }
 					checked={ getValue( { item: data } ) }
 					onChange={ () => {

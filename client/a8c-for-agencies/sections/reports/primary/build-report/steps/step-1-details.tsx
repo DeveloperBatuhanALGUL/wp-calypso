@@ -134,7 +134,6 @@ export default function Step1Details( { formData, state, handlers }: StepProps )
 
 			<SelectControl
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				label={ translate( 'Report date range' ) }
 				value={ selectedTimeframe }
 				options={ availableTimeframes }
@@ -152,7 +151,6 @@ export default function Step1Details( { formData, state, handlers }: StepProps )
 					<div className="build-report__date-field">
 						<TextControl
 							__next40pxDefaultSize
-							__nextHasNoMarginBottom
 							id="start-date"
 							label={ translate( 'Start date' ) }
 							aria-label={ translate( 'Start date' ) }
@@ -217,7 +215,6 @@ export default function Step1Details( { formData, state, handlers }: StepProps )
 					<div className="build-report__date-field">
 						<TextControl
 							__next40pxDefaultSize
-							__nextHasNoMarginBottom
 							id="end-date"
 							label={ translate( 'End date' ) }
 							value={ formatDate( endDate ) }
@@ -275,7 +272,6 @@ export default function Step1Details( { formData, state, handlers }: StepProps )
 			<div className="build-report__field">
 				<TextControl
 					__next40pxDefaultSize
-					__nextHasNoMarginBottom
 					label={ translate( 'Client email(s)' ) }
 					value={ clientEmail }
 					onChange={ setClientEmail }
@@ -303,7 +299,6 @@ export default function Step1Details( { formData, state, handlers }: StepProps )
 				) }
 			</div>
 			<CheckboxControl
-				__nextHasNoMarginBottom
 				label={ translate( 'Also send to your team' ) }
 				checked={ sendCopyToTeam }
 				onChange={ ( checked ) => {
@@ -318,7 +313,6 @@ export default function Step1Details( { formData, state, handlers }: StepProps )
 				<div>
 					<TextControl
 						__next40pxDefaultSize
-						__nextHasNoMarginBottom
 						label={ translate( 'Teammate email(s)' ) }
 						value={ teammateEmails }
 						onChange={ setTeammateEmails }

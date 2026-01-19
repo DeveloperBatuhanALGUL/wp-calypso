@@ -61,7 +61,6 @@ export function DisconnectRepositoryModalContent( {
 
 				return (
 					<ToggleControl
-						__nextHasNoMarginBottom
 						label={ label }
 						checked={ getValue( { item: data } ) }
 						disabled={ isDisconnecting }

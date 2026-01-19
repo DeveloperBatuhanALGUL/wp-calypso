@@ -49,7 +49,6 @@ export default function UsageInformationCard() {
 				const { id, label, getValue } = field;
 				return (
 					<ToggleControl
-						__nextHasNoMarginBottom
 						label={ hideLabelFromVision ? '' : label }
 						checked={ ! getValue( { item: data } ) }
 						disabled={ mutation.isPending }

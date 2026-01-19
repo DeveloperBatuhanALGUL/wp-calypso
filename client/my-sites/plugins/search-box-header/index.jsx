@@ -59,7 +59,6 @@ const SearchBoxHeader = ( props ) => {
 			{ subtitle && <p className="search-box-header__subtitle">{ subtitle }</p> }
 			<div className="search-box-header__search">
 				<StyledSearchControl
-					__nextHasNoMarginBottom
 					value={ searchTerm }
 					className={ clsx( 'search-box-header__searchbox', {
 						'components-search-control--mobile': ! isDesktop,

@@ -251,7 +251,6 @@ function McpComponent() {
 											{ categoryTools.map( ( [ toolId, tool ]: [ string, McpAbility ] ) => (
 												<ToggleControl
 													key={ toolId }
-													__nextHasNoMarginBottom
 													checked={ tool.enabled }
 													disabled={ mutation.isPending }
 													label={ tool.title }
@@ -300,7 +299,6 @@ function McpComponent() {
 							</HStack>
 
 							<ToggleControl
-								__nextHasNoMarginBottom
 								checked={ anyToolsEnabled }
 								onChange={ handleMasterToggle }
 								label={
@@ -328,7 +326,6 @@ function McpComponent() {
 
 								<FormTokenField
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									label={ __( 'Select sites to manage AI access' ) }
 									value={ selectedSiteTokens }
 									suggestions={ siteSuggestions }
@@ -341,7 +338,6 @@ function McpComponent() {
 
 								{ selectedSiteIds.length > 0 && (
 									<ToggleControl
-										__nextHasNoMarginBottom
 										checked={ allSelectedSitesEnabled }
 										disabled={ mutation.isPending }
 										onChange={ handleAllSitesToggle }

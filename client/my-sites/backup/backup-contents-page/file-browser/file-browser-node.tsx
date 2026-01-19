@@ -352,7 +352,6 @@ function FileBrowserNode( {
 
 		return (
 			<CheckboxControl
-				__nextHasNoMarginBottom
 				checked={ browserNodeItem?.checkState === 'checked' }
 				indeterminate={ browserNodeItem?.checkState === 'mixed' }
 				onChange={ onCheckboxChange }

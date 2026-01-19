@@ -180,7 +180,6 @@ export default function PrintBackupCodes( {
 								</CardFooter>
 							</Card>
 							<CheckboxControl
-								__nextHasNoMarginBottom
 								checked={ isBackupCodesPrinted }
 								onChange={ setIsBackupCodesPrinted }
 								label={ __( 'I have printed or saved these codes' ) }

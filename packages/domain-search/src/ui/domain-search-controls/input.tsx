@@ -34,7 +34,6 @@ export const DomainSearchControlsInput = ( {
 	return (
 		<SearchControl
 			className="domain-search-controls__input"
-			__nextHasNoMarginBottom
 			hideLabelFromVision
 			placeholder={ placeholder ?? __( 'Search…' ) }
 			value={ value }

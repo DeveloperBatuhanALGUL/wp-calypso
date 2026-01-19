@@ -37,7 +37,6 @@ const fields: Field< OptInFormData >[] = [
 		Edit: ( { field, onChange, data, hideLabelFromVision } ) => {
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ field.getValue( { item: data } ) }
 					label={ hideLabelFromVision ? '' : field.label }
 					onChange={ ( value ) => {

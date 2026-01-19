@@ -191,7 +191,6 @@ export const DevicesSettings = ( { siteId }: { siteId: number } ) => {
 					) }
 				</Text>
 				<SelectControl
-					__nextHasNoMarginBottom
 					__next40pxDefaultSize
 					label={ __( 'Select device' ) }
 					value={ selectedDeviceId?.toString() }

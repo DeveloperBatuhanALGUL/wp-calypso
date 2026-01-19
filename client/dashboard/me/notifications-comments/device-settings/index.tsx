@@ -136,7 +136,6 @@ export const DevicesSettings = () => {
 						value={ selectedDeviceId }
 						onChange={ ( value ) => setSelectedDeviceId( value ) }
 						__next40pxDefaultSize
-						__nextHasNoMarginBottom
 					>
 						{ hasDevices &&
 							devices.map( ( device ) => (

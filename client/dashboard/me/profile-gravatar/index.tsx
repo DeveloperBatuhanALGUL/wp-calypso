@@ -31,11 +31,7 @@ const fields: Field< UserSettings >[] = [
 		type: 'text',
 		Edit: ( { field, data, hideLabelFromVision } ) => {
 			return (
-				<BaseControl
-					label={ field.label }
-					hideLabelFromVision={ hideLabelFromVision }
-					__nextHasNoMarginBottom
-				>
+				<BaseControl label={ field.label } hideLabelFromVision={ hideLabelFromVision }>
 					<EditGravatar avatarUrl={ data.avatar_URL } userEmail={ data.user_email } />
 				</BaseControl>
 			);
@@ -75,7 +71,6 @@ const fields: Field< UserSettings >[] = [
 		type: 'text',
 		Edit: ( { field, data, onChange, hideLabelFromVision } ) => (
 			<TextareaControl
-				__nextHasNoMarginBottom
 				label={ hideLabelFromVision ? '' : field.label }
 				value={ data.description }
 				onChange={ ( value: string ) => onChange( { description: value } ) }

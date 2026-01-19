@@ -110,7 +110,6 @@ export default function PersonalDetailsSection() {
 			const { id, getValue, description } = field;
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					label={ hideLabelFromVision ? '' : field.label }
 					help={ description }
 					checked={ getValue( { item: data } ) }

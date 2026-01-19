@@ -118,7 +118,6 @@ export default function DomainTransferSetup() {
 							} }
 							type="password"
 							autoComplete="off"
-							__nextHasNoMarginBottom
 							__next40pxDefaultSize
 						/>
 					</div>

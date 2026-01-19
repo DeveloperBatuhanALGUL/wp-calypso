@@ -187,7 +187,6 @@ const ThreatDialog: React.FC< Props > = ( {
 					</p>
 					<TextControl
 						__next40pxDefaultSize
-						__nextHasNoMarginBottom
 						help=""
 						label=""
 						onChange={ ( value: string ) => setConfirmationInput( value ) }

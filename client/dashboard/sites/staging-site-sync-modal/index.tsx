@@ -463,7 +463,6 @@ function StagingSiteSyncModalInner( {
 								style={ { padding: '4px 0', marginTop: '-8px' } }
 							>
 								<CheckboxControl
-									__nextHasNoMarginBottom
 									label={ __( 'Files and folders' ) }
 									disabled={ shouldDisableGranularSync }
 									checked={
@@ -482,7 +481,6 @@ function StagingSiteSyncModalInner( {
 									] }
 									onChange={ handleFileSelectionModeChange }
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									aria-label={ __( 'Select files and folders to sync' ) }
 								/>
 							</HStack>
@@ -528,7 +526,6 @@ function StagingSiteSyncModalInner( {
 								} }
 							>
 								<CheckboxControl
-									__nextHasNoMarginBottom
 									label={ __( 'Database' ) }
 									disabled={ shouldDisableGranularSync }
 									checked={ hasWarning }

@@ -44,7 +44,6 @@ function DeploymentSelectControl( { data, field, onChange }: DeploymentSelectCon
 	return (
 		<SelectControl
 			__next40pxDefaultSize
-			__nextHasNoMarginBottom
 			label={ label }
 			onChange={ ( value ) => onChange( { [ id ]: value } ) }
 			options={ options }

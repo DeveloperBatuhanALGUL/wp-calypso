@@ -43,7 +43,6 @@ const CustomSelectControl = ( { field, data, onChange }: DataFormControlProps< S
 				onChange( { [ id ]: value } );
 			} }
 			__next40pxDefaultSize
-			__nextHasNoMarginBottom
 		>
 			{ field.elements?.map( ( element: { label: string; value: string } ) => (
 				<option key={ element.value } value={ element.value }>
@@ -128,7 +127,6 @@ const baseFields: Field< SettingsData >[] = [
 
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					label={ field.label }
 					help={
 						<span>
@@ -153,7 +151,6 @@ const baseFields: Field< SettingsData >[] = [
 			const { id, getValue, description } = field;
 			return (
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					label={ hideLabelFromVision ? '' : field.label }
 					help={ description }
 					checked={ getValue( { item: data } ) }

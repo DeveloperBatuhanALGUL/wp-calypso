@@ -490,7 +490,6 @@ function SyncModal( {
 									<div className="file-browser-node__loading placeholder" />
 								) : (
 									<CheckboxControl
-										__nextHasNoMarginBottom
 										label={ __( 'Files and folders' ) }
 										disabled={ shouldDisableGranularSync }
 										checked={
@@ -516,7 +515,6 @@ function SyncModal( {
 									] }
 									onChange={ handleExpanderChange }
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									aria-label={ __( 'Select files and folders to sync' ) }
 								/>
 							</HStack>
@@ -548,7 +546,6 @@ function SyncModal( {
 									<div className="file-browser-node__loading placeholder" />
 								) : (
 									<CheckboxControl
-										__nextHasNoMarginBottom
 										label={ __( 'Database' ) }
 										disabled={ shouldDisableGranularSync }
 										checked={ hasWarning }

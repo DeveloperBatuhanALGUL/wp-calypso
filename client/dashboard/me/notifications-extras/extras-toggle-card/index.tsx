@@ -70,7 +70,6 @@ export function ExtrasToggleCard< Key extends keyof WpcomNotificationSettings & 
 					<SectionHeader level={ 3 } title={ sectionTitle } description={ sectionDescription } />
 
 					<ToggleControl
-						__nextHasNoMarginBottom
 						checked={ topToggleChecked }
 						label={
 							<Text weight="bold">
@@ -85,7 +84,6 @@ export function ExtrasToggleCard< Key extends keyof WpcomNotificationSettings & 
 						{ optionKeys.map( ( key ) => (
 							<ToggleControl
 								key={ key }
-								__nextHasNoMarginBottom
 								checked={ !! extraSettings?.[ key ] }
 								label={ titles[ key ] }
 								help={ descriptions?.[ key ] }

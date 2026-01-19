@@ -278,7 +278,6 @@ function SiteLogsDataViews( {
 				onError={ ( message ) => createErrorNotice( message, { type: 'snackbar' } ) }
 			/>
 			<ToggleControl
-				__nextHasNoMarginBottom
 				label={ __( 'Auto-refresh' ) }
 				checked={ autoRefresh }
 				onChange={ handleAutoRefreshClick }

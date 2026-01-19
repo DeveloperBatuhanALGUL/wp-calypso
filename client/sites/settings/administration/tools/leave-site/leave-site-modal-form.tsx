@@ -110,7 +110,6 @@ const LeaveSiteModalForm = ( { siteId, onSuccess, onClose }: LeaveSiteModalFormP
 					) }
 				</p>
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					label={ translate( 'I understand the consequences of leaving' ) }
 					checked={ isChecked }
 					disabled={ isSubmitting }

@@ -103,7 +103,6 @@ export const DomainsTableHeader = ( {
 					<th className="domains-table-checkbox-th">
 						<CheckboxControl
 							data-testid="domains-select-all-checkbox"
-							__nextHasNoMarginBottom
 							onChange={ onBulkSelectionChange }
 							indeterminate={ bulkSelectionStatus === 'some-domains' }
 							checked={ bulkSelectionStatus === 'all-domains' }

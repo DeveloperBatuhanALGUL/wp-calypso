@@ -59,7 +59,6 @@ export default function PhoneNumberInput( {
 				options={ countryCodes }
 				onChange={ onChangeCountryCode }
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				disabled={ isDisabled }
 				className="phone-number-input__country-code-input"
 			/>

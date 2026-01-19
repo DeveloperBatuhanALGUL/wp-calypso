@@ -92,7 +92,6 @@ function AutoRenewButton( {
 				} )();
 				return (
 					<ToggleControl
-						__nextHasNoMarginBottom
 						className="purchase-settings__toggle-control"
 						label={ title }
 						checked={ isAutoRenewing }

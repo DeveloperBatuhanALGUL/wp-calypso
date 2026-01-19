@@ -61,7 +61,6 @@ const createStateFieldEdit = ( statesList: StatesListItem[] | undefined, country
 		return (
 			<SelectControl
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				label={ hideLabelFromVision ? '' : stateLabel }
 				value={ currentValue }
 				options={

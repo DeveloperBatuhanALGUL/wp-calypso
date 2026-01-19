@@ -29,7 +29,6 @@ class EmailCategory extends Component {
 		const { isEnabled, description, title } = this.props;
 		return (
 			<ToggleControl
-				__nextHasNoMarginBottom
 				checked={ isEnabled }
 				className="wpcom-settings__notification-settings-emailcategory"
 				help={ description }

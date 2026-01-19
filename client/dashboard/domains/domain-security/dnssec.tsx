@@ -82,7 +82,6 @@ export default function DnsSec( { domainName, domain }: DnsSecProps ) {
 						<VStack spacing={ 4 }>
 							<HStack alignment="left">
 								<ToggleControl
-									__nextHasNoMarginBottom
 									checked={ domain.is_dnssec_enabled ?? false }
 									onChange={ ( checked ) => handleToggleChange( checked ) }
 									disabled={ isPending }

@@ -29,7 +29,6 @@ export default function ContactFormPrivacy( {
 		return (
 			<>
 				<ToggleControl
-					__nextHasNoMarginBottom
 					checked={ domain.private_domain }
 					disabled={ isSubmitting || ! domain.privacy_available }
 					onChange={ onTogglePrivacyProtection }
@@ -71,7 +70,6 @@ export default function ContactFormPrivacy( {
 		return (
 			<>
 				<ToggleControl
-					__nextHasNoMarginBottom
 					checked={ domain.contact_info_disclosed }
 					onChange={ onTogglePrivacyDisclosure }
 					disabled={ isSubmitting || domain.is_pending_icann_verification }

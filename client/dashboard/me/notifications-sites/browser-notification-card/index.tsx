@@ -88,7 +88,6 @@ export const BrowserNotificationCard = () => {
 				<HStack spacing={ 4 } alignment="top">
 					<VStack spacing={ 4 }>
 						<ToggleControl
-							__nextHasNoMarginBottom
 							label={ __( 'Enable browser notifications' ) }
 							checked={ checked }
 							onChange={ handleChange }

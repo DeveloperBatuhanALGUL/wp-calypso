@@ -125,7 +125,6 @@ const BackupScheduleSetting: FunctionComponent = () => {
 					value={ data?.scheduledHour?.toString() || '' }
 					help={ getScheduleInfoMessage() }
 					onChange={ updateScheduledTime }
-					__nextHasNoMarginBottom
 				/>
 			</Card>
 		</div>

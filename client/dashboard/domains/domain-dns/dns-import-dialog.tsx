@@ -126,7 +126,6 @@ export default function DnsImportDialog( {
 
 		return (
 			<CheckboxControl
-				__nextHasNoMarginBottom
 				checked={ numberOfSelectedRecords === records.length }
 				indeterminate={ numberOfSelectedRecords > 0 && numberOfSelectedRecords < records.length }
 				onChange={ toggleAllRecords }
@@ -142,7 +141,6 @@ export default function DnsImportDialog( {
 		return (
 			<div key={ index } style={ { marginBottom: '8px', wordBreak: 'break-all' } }>
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ isSelected }
 					onChange={ () => toggleRecord( recordId ) }
 					label={ renderRecordAsString( record ) }

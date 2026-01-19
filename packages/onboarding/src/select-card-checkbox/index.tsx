@@ -28,12 +28,7 @@ const SelectCardCheckbox = ( {
 			onClick={ () => onChange( ! checked ) }
 			role="presentation"
 		>
-			<CheckboxControl
-				__nextHasNoMarginBottom
-				checked={ checked }
-				id={ id }
-				onChange={ onChange }
-			/>
+			<CheckboxControl checked={ checked } id={ id } onChange={ onChange } />
 			<label className="select-card-checkbox__label" htmlFor={ id }>
 				{ children }
 			</label>

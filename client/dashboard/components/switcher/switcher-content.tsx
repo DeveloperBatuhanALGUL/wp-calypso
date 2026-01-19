@@ -82,7 +82,6 @@ export default function SwitcherContent< T >( {
 			value={ view.search }
 			onChange={ ( value ) => onChangeView( { ...view, search: value } ) }
 			size="compact"
-			__nextHasNoMarginBottom
 		/>
 	);
 

@@ -74,7 +74,6 @@ export const DeleteDeploymentDialog = ( {
 				</p>
 				<ToggleControl
 					onChange={ setRemoveFiles }
-					__nextHasNoMarginBottom
 					checked={ removeFiles }
 					label={ __( 'Remove associated files from my WordPress.com site' ) }
 				/>

@@ -230,7 +230,6 @@ export default function ProvideFeedback() {
 				<SelectControl
 					className="a4a-provide-feedback__form-select"
 					__next40pxDefaultSize
-					__nextHasNoMarginBottom
 					label={ translate( 'What kind of feedback do you want to provide' ) }
 					labelPosition="top"
 					value={ feedbackType }

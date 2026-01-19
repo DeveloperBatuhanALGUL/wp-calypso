@@ -41,7 +41,6 @@ export default function IntentToggle( { currentIntent, onIntentChange }: IntentT
 				value={ currentIntent || '' }
 				onChange={ handleToggleGroupChange }
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 			>
 				<ToggleGroupControlOption
 					value="plans-website-builder"

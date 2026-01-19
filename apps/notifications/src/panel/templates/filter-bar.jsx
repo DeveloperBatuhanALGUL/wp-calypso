@@ -93,7 +93,6 @@ export class FilterBar extends Component {
 					value={ filterName }
 					onChange={ ( selectedFilter ) => this.props.controller.selectFilter( selectedFilter ) }
 					onKeyDown={ this.handleKeydown }
-					__nextHasNoMarginBottom
 					__next40pxDefaultSize
 				>
 					{ filterItems.map( ( { label, name } ) => {

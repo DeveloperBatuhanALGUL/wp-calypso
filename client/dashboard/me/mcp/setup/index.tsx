@@ -231,7 +231,6 @@ function McpSetupComponent() {
 							<VStack spacing={ 4 }>
 								<SelectControl
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									label={ __( 'MCP Client' ) }
 									value={ selectedMcpClient }
 									options={ mcpClientOptions }
@@ -345,7 +344,6 @@ function McpSetupComponent() {
 									/>
 								</HStack>
 								<TextareaControl
-									__nextHasNoMarginBottom
 									value={ JSON.stringify( generateMcpConfig( selectedMcpClient ), null, 2 ) }
 									onChange={ () => {} } // Required prop for read-only textarea
 									readOnly

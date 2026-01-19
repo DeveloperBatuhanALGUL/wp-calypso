@@ -286,7 +286,6 @@ export const SiteLogsDataViews = ( {
 						}
 					} }
 					value={ logType }
-					__nextHasNoMarginBottom
 					__next40pxDefaultSize
 				>
 					<ToggleGroupControlOption
@@ -336,7 +335,6 @@ export const SiteLogsDataViews = ( {
 							isBusy={ isDownloading }
 						/>
 						<ToggleControl
-							__nextHasNoMarginBottom
 							className="site-logs__auto-refresh site-logs__auto-refresh_desktop"
 							label={ translate( 'Auto-refresh', { textOnly: true } ) }
 							checked={ autoRefresh }

@@ -23,7 +23,6 @@ function FileBrowserHeader( { rewindId }: { rewindId: number } ) {
 		<VStack className="file-browser-header">
 			<HStack className="file-browser-header__selecting" justify="flex-start" spacing={ 0 }>
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ rootNode ? rootNode.checkState === 'checked' : false }
 					indeterminate={ rootNode?.checkState === 'mixed' }
 					onChange={ onCheckboxChange }

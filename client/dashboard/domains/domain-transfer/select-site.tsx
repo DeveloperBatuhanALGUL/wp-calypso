@@ -124,7 +124,6 @@ export function SelectSite( { attachedSiteId, onSiteSelect }: Props ) {
 			<VStack spacing={ 4 }>
 				<HStack>
 					<SearchControl
-						__nextHasNoMarginBottom
 						ref={ searchInputRef }
 						size="compact"
 						value={ view.search }

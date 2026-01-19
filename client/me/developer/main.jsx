@@ -60,7 +60,6 @@ class Developer extends Component {
 									checked={ this.props.getSetting( 'is_dev_account' ) }
 									onChange={ this.handleToggleIsDevAccount }
 									label={ getIAmDeveloperCopy( this.props.translate ) }
-									__nextHasNoMarginBottom
 								/>
 							</FormFieldset>
 						</form>

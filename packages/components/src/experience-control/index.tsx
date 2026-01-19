@@ -37,11 +37,7 @@ const ExperienceControlBase = ( {
 	const { baseControlProps, controlProps } = useBaseControlProps( restProps );
 
 	return (
-		<BaseControl
-			__nextHasNoMarginBottom
-			className={ clsx( 'a8c-experience-control', className ) }
-			{ ...baseControlProps }
-		>
+		<BaseControl className={ clsx( 'a8c-experience-control', className ) } { ...baseControlProps }>
 			<fieldset { ...controlProps } className="a8c-experience-control__fieldset">
 				{ hideLabelFromVision ? (
 					<VisuallyHidden as="legend">{ label }</VisuallyHidden>

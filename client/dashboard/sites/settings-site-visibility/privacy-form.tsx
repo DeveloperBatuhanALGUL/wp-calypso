@@ -73,7 +73,6 @@ const robotFields: Field< PrivacyFormData & { isPrimaryDomainStaging: boolean } 
 		isVisible: ( { visibility } ) => visibility === 'public',
 		Edit: ( { field, onChange, data, hideLabelFromVision } ) => (
 			<CheckboxControl
-				__nextHasNoMarginBottom
 				label={ hideLabelFromVision ? '' : field.label }
 				checked={ data.isPrimaryDomainStaging || field.getValue( { item: data } ) }
 				disabled={ data.isPrimaryDomainStaging }
@@ -88,7 +87,6 @@ const robotFields: Field< PrivacyFormData & { isPrimaryDomainStaging: boolean } 
 		id: 'preventThirdPartySharing',
 		Edit: ( { field, onChange, data, hideLabelFromVision } ) => (
 			<CheckboxControl
-				__nextHasNoMarginBottom
 				label={ hideLabelFromVision ? '' : field.label }
 				checked={ data.isPrimaryDomainStaging || field.getValue( { item: data } ) }
 				disabled={ data.isPrimaryDomainStaging || data.discourageSearchEngines }

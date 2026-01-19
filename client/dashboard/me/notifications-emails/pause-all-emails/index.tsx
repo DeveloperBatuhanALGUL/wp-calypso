@@ -88,7 +88,6 @@ export const PauseAllEmails = () => {
 					<form onSubmit={ handleSubmit }>
 						<VStack spacing={ 4 } alignment="start">
 							<CheckboxControl
-								__nextHasNoMarginBottom
 								help={ __(
 									'Pause all email updates from sites you’re subscribed to on WordPress.com. This includes newsletters from the sites you follow. You can turn them back on anytime.'
 								) }

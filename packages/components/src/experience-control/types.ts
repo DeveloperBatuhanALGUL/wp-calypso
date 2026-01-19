@@ -38,10 +38,7 @@ export type ExperienceControlOptionProps = Pick<
  * Base props for the experience control component.
  * Extends WordPress BaseControl props with some exclusions.
  */
-export type ExperienceControlBaseProps = Omit<
-	React.ComponentProps< typeof BaseControl >,
-	'__nextHasNoMarginBottom' | 'as'
->;
+export type ExperienceControlBaseProps = Omit< React.ComponentProps< typeof BaseControl >, 'as' >;
 
 /**
  * Props for the main ExperienceControl component.

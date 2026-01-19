@@ -108,7 +108,6 @@ const SearchBox: FC< {
 
 	return (
 		<SearchControl
-			__nextHasNoMarginBottom
 			ref={ inputRef }
 			className={ clsx( {
 				'components-search-control--mobile': ! isDesktop(),

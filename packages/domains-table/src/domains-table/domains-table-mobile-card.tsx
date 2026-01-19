@@ -57,7 +57,6 @@ export const DomainsTableMobileCard = ( { domain }: Props ) => {
 				<div className="domains-table-mobile-card-header">
 					{ showBulkActions && (
 						<CheckboxControl
-							__nextHasNoMarginBottom
 							checked={ isSelected }
 							onChange={ () => handleSelectDomain( domain ) }
 							/* translators: Label for a checkbox control that selects a domain name.*/

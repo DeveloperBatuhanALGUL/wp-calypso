@@ -98,7 +98,6 @@ function EditablePreference( {
 					if ( inputType === 'checkbox' ) {
 						return (
 							<CheckboxControl
-								__nextHasNoMarginBottom
 								checked={ data[ id ] as unknown as boolean }
 								onChange={ ( newValue ) =>
 									onChange( { [ id ]: formattedValue( inputType, newValue ) } )

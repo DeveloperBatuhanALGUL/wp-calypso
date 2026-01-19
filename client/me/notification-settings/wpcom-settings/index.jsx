@@ -96,7 +96,6 @@ class WPCOMNotifications extends Component {
 				</FormSectionHeading>
 
 				<ToggleControl
-					__nextHasNoMarginBottom
 					checked={ this.toggleShouldBeOff( options ) }
 					className="wpcom-settings__notification-settings-emailsection-toggle"
 					label={
@@ -194,7 +193,6 @@ class WPCOMNotifications extends Component {
 						</p>
 
 						<ToggleControl
-							__nextHasNoMarginBottom
 							checked={ this.toggleShouldBeOff( jetpackOptions ) }
 							className="wpcom-settings__notification-settings-emailsection-toggle"
 							label={

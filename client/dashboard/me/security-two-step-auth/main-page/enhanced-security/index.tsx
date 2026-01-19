@@ -44,7 +44,6 @@ export default function EnhancedSecurity() {
 					<VStack spacing={ 4 }>
 						<SectionHeader title={ __( 'Enhanced account security' ) } level={ 3 } />
 						<ToggleControl
-							__nextHasNoMarginBottom
 							checked={ two_step_enhanced_security }
 							onChange={ handleChange }
 							disabled={ two_step_enhanced_security_forced || isUpdatingUserSettings }

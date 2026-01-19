@@ -80,7 +80,6 @@ export default function PreferencesLoginSiteDropdown( {
 	return (
 		<ComboboxControl
 			__next40pxDefaultSize
-			__nextHasNoMarginBottom
 			className="dashboard-preferences__login-site-dropdown"
 			label={ hideLabelFromVision ? '' : label }
 			value={ value }

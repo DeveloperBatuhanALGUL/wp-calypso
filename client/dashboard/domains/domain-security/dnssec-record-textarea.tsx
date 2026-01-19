@@ -54,7 +54,6 @@ export function DnsSecRecordTextarea( { value, label }: DnsSecRecordTextareaProp
 			disabled
 			readOnly
 			rows={ textareaRows }
-			__nextHasNoMarginBottom
 			className="dnssec-record-textarea"
 		/>
 	);

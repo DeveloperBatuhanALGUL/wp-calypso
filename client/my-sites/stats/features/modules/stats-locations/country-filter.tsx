@@ -23,7 +23,6 @@ const CountryFilter: React.FC< {
 		<div className="stats-module-locations__country-filter">
 			<SelectControl
 				__next40pxDefaultSize
-				__nextHasNoMarginBottom
 				onChange={ onChange }
 				options={ options }
 				value={ selectedCountry ?? '' }

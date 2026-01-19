@@ -41,7 +41,6 @@ function ScheduledUpdatesFrequencySelection( { frequency, weekday, time, onChang
 							<VStack spacing={ 2 } style={ { flex: 1 } }>
 								<SelectControl
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									label={ __( 'Select day' ) }
 									value={ weekday }
 									onChange={ ( val: string ) =>
@@ -61,7 +60,6 @@ function ScheduledUpdatesFrequencySelection( { frequency, weekday, time, onChang
 							<VStack spacing={ 2 } style={ { flex: 1 } }>
 								<SelectControl
 									__next40pxDefaultSize
-									__nextHasNoMarginBottom
 									label={ __( 'Select time' ) }
 									value={ time }
 									onChange={ ( val: string ) => onChange( { frequency, weekday, time: val } ) }
@@ -72,7 +70,6 @@ function ScheduledUpdatesFrequencySelection( { frequency, weekday, time, onChang
 					) : (
 						<SelectControl
 							__next40pxDefaultSize
-							__nextHasNoMarginBottom
 							label={ __( 'Select time' ) }
 							value={ time }
 							onChange={ ( val: string ) => onChange( { frequency, weekday, time: val } ) }

@@ -109,7 +109,6 @@ export default function SshKeyForm( {
 					const { id, getValue } = field;
 					return (
 						<TextareaControl
-							__nextHasNoMarginBottom
 							label={ field.label }
 							help={ field.description }
 							placeholder={ field.placeholder }
@@ -156,7 +155,7 @@ export default function SshKeyForm( {
 							/>
 						) }
 						{ isEditing && sshKey && (
-							<BaseControl __nextHasNoMarginBottom label={ __( 'Current public SSH key' ) }>
+							<BaseControl label={ __( 'Current public SSH key' ) }>
 								<Card isRounded={ false }>
 									<CardBody>
 										<VStack spacing={ 2 }>

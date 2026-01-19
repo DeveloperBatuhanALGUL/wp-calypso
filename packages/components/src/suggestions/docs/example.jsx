@@ -25,7 +25,6 @@ export default function SuggestionsExample() {
 					autoCapitalize="off"
 					spellCheck={ false }
 					placeholder="Type Foo, Bar or Baz…"
-					__nextHasNoMarginBottom
 					__next40pxDefaultSize
 				/>
 				<p>

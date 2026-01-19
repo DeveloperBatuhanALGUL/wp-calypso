@@ -146,7 +146,6 @@ export const FeedbackForm = ( { chatFeedbackOptions }: FeedbackFormProps ) => {
 
 							<TextareaControl
 								label={ score === 'bad' ? __( 'Additional Comments', __i18n_text_domain__ ) : '' }
-								__nextHasNoMarginBottom
 								value={ comment }
 								onChange={ ( value ) => setComment( value ) }
 							/>

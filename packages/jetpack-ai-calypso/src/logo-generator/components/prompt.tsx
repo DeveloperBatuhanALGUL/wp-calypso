@@ -171,12 +171,7 @@ export const Prompt: React.FC< { initialPrompt?: string } > = ( { initialPrompt 
 					</Button>
 					{ showStyleSelector && (
 						<div>
-							<SelectControl
-								__nextHasNoMarginBottom
-								value={ style }
-								options={ styles }
-								onChange={ updateStyle }
-							/>
+							<SelectControl value={ style } options={ styles } onChange={ updateStyle } />
 						</div>
 					) }
 				</div>

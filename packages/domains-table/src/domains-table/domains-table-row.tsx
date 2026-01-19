@@ -151,7 +151,6 @@ export function DomainsTableRow( { domain }: DomainsTableRowProps ) {
 					onClick={ ( e: MouseEvent ) => e.stopPropagation() }
 				>
 					<CheckboxControl
-						__nextHasNoMarginBottom
 						checked={ isSelected }
 						onChange={ () => handleSelectDomain( domain ) }
 						/* translators: Label for a checkbox control that selects a domain name.*/

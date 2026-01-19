@@ -72,7 +72,6 @@ function ImportBindFileConfirmationDialog( {
 		return (
 			<div className="import-bind-file-confirmation-dialog__header">
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ numberOfSelectedRecords === recordsToImport?.length }
 					indeterminate={
 						numberOfSelectedRecords > 0 && numberOfSelectedRecords < recordsToImport?.length
@@ -92,7 +91,6 @@ function ImportBindFileConfirmationDialog( {
 		return (
 			<div key={ index } className={ className }>
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ record.selected }
 					onChange={ () => toggleRecord( index ) }
 					label={ renderRecordAsString( record ) }

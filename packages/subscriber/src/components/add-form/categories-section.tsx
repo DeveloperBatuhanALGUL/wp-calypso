@@ -71,7 +71,6 @@ export const CategoriesSection: React.FC< Props > = ( {
 				{ __( 'Categories' ) } <span>({ __( 'optional' ) })</span>
 			</h3>
 			<ToggleControl
-				__nextHasNoMarginBottom
 				label={
 					<div className="categories-toggle-container">
 						<p>
@@ -124,7 +123,6 @@ export const CategoriesSection: React.FC< Props > = ( {
 			{ showCategories && newsletterCategories && (
 				<FormTokenField
 					__next40pxDefaultSize
-					__nextHasNoMarginBottom
 					__experimentalShowHowTo={ false }
 					value={ selectedCategories
 						.map( ( id ) => newsletterCategories.find( ( cat ) => cat.id === id )?.name ?? '' )

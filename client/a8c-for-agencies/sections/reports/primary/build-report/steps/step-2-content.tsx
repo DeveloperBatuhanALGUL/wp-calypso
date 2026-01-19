@@ -66,7 +66,6 @@ export default function Step2Content( { formData, state, handlers }: StepProps )
 			</h2>
 
 			<TextareaControl
-				__nextHasNoMarginBottom
 				label={ translate( 'Intro message (optional)' ) }
 				value={ customIntroText }
 				onChange={ ( value ) => {
@@ -85,7 +84,6 @@ export default function Step2Content( { formData, state, handlers }: StepProps )
 				<FormLegend className="build-report__group-label">{ translate( 'Stats' ) }</FormLegend>
 				{ statsOptions.map( ( item ) => (
 					<CheckboxControl
-						__nextHasNoMarginBottom
 						key={ item.value }
 						label={ item.label }
 						checked={ statsCheckedItems[ item.value ] }

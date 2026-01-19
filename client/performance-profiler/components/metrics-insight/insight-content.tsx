@@ -114,7 +114,6 @@ export const InsightContent: React.FC< InsightContentProps > = ( props ) => {
 						</div>
 						<TextareaControl
 							className="feedback-textarea"
-							__nextHasNoMarginBottom
 							rows={ 4 }
 							onChange={ ( value ) => setUserFeedback( value ) }
 							value={ userFeedback }

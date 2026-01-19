@@ -35,7 +35,6 @@ const SelectCardCheckboxV2 = ( {
 		>
 			<HStack alignment="left" spacing={ 2 } as="span">
 				<CheckboxControl
-					__nextHasNoMarginBottom
 					checked={ checked }
 					id={ id }
 					onChange={ onChange }

@@ -89,7 +89,6 @@ export const GitHubBrowseRepositories = ( {
 				/>
 				<SearchControl
 					css={ { flex: 1 } }
-					__nextHasNoMarginBottom
 					placeholder={ __( 'Search repositories' ) }
 					value={ query }
 					onChange={ handleQueryChange }

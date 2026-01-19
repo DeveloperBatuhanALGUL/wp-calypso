@@ -87,7 +87,6 @@ export default function FieldActionToggle( {
 			onKeyDown={ ( e ) => e.stopPropagation() }
 		>
 			<ToggleControl
-				__nextHasNoMarginBottom
 				label={ label }
 				checked={ checked }
 				disabled={ disabled }

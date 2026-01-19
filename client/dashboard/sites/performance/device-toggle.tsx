@@ -38,7 +38,6 @@ export default function DeviceToggle( { value, onChange, disabled }: DeviceToggl
 			disabled={ disabled }
 			hideLabelFromVision
 			__next40pxDefaultSize
-			__nextHasNoMarginBottom
 			onChange={ ( value ) => onChange( value as DeviceToggleType ) }
 		>
 			{ options.map( ( option ) => {

@@ -95,7 +95,6 @@ export const HelpCenterA4AContactForm = () => {
 							const { id, getValue } = field;
 							return (
 								<TextControl
-									__nextHasNoMarginBottom
 									type="number"
 									min="1"
 									label={ field.label }
@@ -205,7 +204,6 @@ export const HelpCenterA4AContactForm = () => {
 							: __( 'Add your message here', __i18n_text_domain__ );
 					return (
 						<TextareaControl
-							__nextHasNoMarginBottom
 							label={ field.label }
 							placeholder={ placeholder }
 							value={ getValue( { item: data } ) }

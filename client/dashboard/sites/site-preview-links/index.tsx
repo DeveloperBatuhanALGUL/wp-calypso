@@ -81,7 +81,6 @@ export default function SitePreviewLinks( { site, title, description }: SitePrev
 					const { id, label, getValue } = field;
 					return (
 						<ToggleControl
-							__nextHasNoMarginBottom
 							label={ hideLabelFromVision ? '' : label }
 							checked={ getValue( { item: data } ) }
 							disabled={ isMutationPending }
