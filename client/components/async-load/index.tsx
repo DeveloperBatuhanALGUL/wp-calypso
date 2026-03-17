@@ -1,11 +1,58 @@
-import { lazy, useMemo, Suspense, type ComponentType, type ReactNode } from 'react';
+import {
+	Component,
+	lazy,
+	Suspense,
+	useMemo,
+	type ComponentType,
+	type ErrorInfo,
+	type ReactNode,
+} from 'react';
 
 import './style.scss';
 
 const DEFAULT_PLACEHOLDER = <div className="async-load__placeholder" />;
 
+type AsyncLoadErrorBoundaryProps = {
+	children: ReactNode;
+	loadFailureFallback: ReactNode;
+	onLoadFailure?: ( error: Error, errorInfo: ErrorInfo ) => void;
+};
+
+type AsyncLoadErrorBoundaryState = {
+	hasError: boolean;
+};
+
+class AsyncLoadErrorBoundary extends Component<
+	AsyncLoadErrorBoundaryProps,
+	AsyncLoadErrorBoundaryState
+> {
+	state: AsyncLoadErrorBoundaryState = {
+		hasError: false,
+	};
+
+	static getDerivedStateFromError(): AsyncLoadErrorBoundaryState {
+		return {
+			hasError: true,
+		};
+	}
+
+	componentDidCatch( error: Error, errorInfo: ErrorInfo ) {
+		this.props.onLoadFailure?.( error, errorInfo );
+	}
+
+	render() {
+		if ( this.state.hasError ) {
+			return this.props.loadFailureFallback;
+		}
+
+		return this.props.children;
+	}
+}
+
 type AsyncLoadProps = {
 	placeholder?: ReactNode;
+	loadFailureFallback?: ReactNode;
+	onLoadFailure?: ( error: Error, errorInfo: ErrorInfo ) => void;
 	require: string;
 	[ key: string ]: unknown;
 };
@@ -14,6 +61,8 @@ type RequireCallback = () => Promise< { default: ComponentType } >;
 
 export default function AsyncLoad( {
 	placeholder = DEFAULT_PLACEHOLDER,
+	loadFailureFallback,
+	onLoadFailure,
 	require,
 	...props
 }: AsyncLoadProps ) {
@@ -23,9 +72,23 @@ export default function AsyncLoad( {
 		return lazy( requireCb );
 	}, [ require ] );
 
-	return (
+	const content = (
 		<Suspense fallback={ placeholder }>
 			<Component { ...props } />
 		</Suspense>
+	);
+
+	if ( typeof loadFailureFallback === 'undefined' ) {
+		return content;
+	}
+
+	return (
+		<AsyncLoadErrorBoundary
+			key={ require }
+			loadFailureFallback={ loadFailureFallback }
+			onLoadFailure={ onLoadFailure }
+		>
+			{ content }
+		</AsyncLoadErrorBoundary>
 	);
 }

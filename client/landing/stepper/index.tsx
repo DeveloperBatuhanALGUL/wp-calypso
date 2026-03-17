@@ -216,7 +216,11 @@ async function main() {
 					<BrowserRouter basename="setup">
 						<FlowRenderer flow={ flow } steps={ flowSteps } />
 						{ config.isEnabled( 'cookie-banner' ) && (
-							<AsyncLoad require="calypso/blocks/cookie-banner" placeholder={ null } />
+							<AsyncLoad
+								require="calypso/blocks/cookie-banner"
+								placeholder={ null }
+								loadFailureFallback={ null }
+							/>
 						) }
 						<AsyncLoad
 							require="calypso/components/global-notices"

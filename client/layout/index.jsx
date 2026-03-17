@@ -348,7 +348,11 @@ class Layout extends Component {
 					<AsyncLoad require="calypso/blocks/support-article-dialog" placeholder={ null } />
 				) }
 				{ config.isEnabled( 'cookie-banner' ) && (
-					<AsyncLoad require="calypso/blocks/cookie-banner" placeholder={ null } />
+					<AsyncLoad
+						require="calypso/blocks/cookie-banner"
+						placeholder={ null }
+						loadFailureFallback={ null }
+					/>
 				) }
 				{ config.isEnabled( 'layout/app-banner' ) && (
 					<AsyncLoad require="calypso/blocks/app-banner" placeholder={ null } />
