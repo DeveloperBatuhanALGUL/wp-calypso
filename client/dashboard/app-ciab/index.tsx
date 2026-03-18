@@ -23,6 +23,7 @@ boot( {
 	mainRoute: '/sites',
 	Logo: null,
 	supports: {
+		agency: false,
 		sites: true,
 		domains: true,
 		emails: true,

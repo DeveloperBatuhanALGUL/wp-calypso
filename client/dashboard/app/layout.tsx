@@ -9,6 +9,7 @@ import { resolveDeviceTypeByViewPort } from '@automattic/viewport';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, type AnyRouter } from '@tanstack/react-router';
 import { useMemo, useEffect } from 'react';
+import A4AContextProvider from './a4a-context-provider';
 import { AnalyticsProvider, type AnalyticsClient } from './analytics';
 import { getNormalizedPath, getSuperProps } from './analytics/super-props';
 import { AuthProvider, useAuth } from './auth';
@@ -78,7 +79,9 @@ function Layout( { config }: { config: AppConfig } ) {
 				<AuthProvider>
 					<I18nProvider>
 						<AnalyticsProviderWithClient router={ router }>
-							<RouterProvider router={ router } context={ { config } } />
+							<A4AContextProvider>
+								<RouterProvider router={ router } context={ { config } } />
+							</A4AContextProvider>
 						</AnalyticsProviderWithClient>
 					</I18nProvider>
 				</AuthProvider>
