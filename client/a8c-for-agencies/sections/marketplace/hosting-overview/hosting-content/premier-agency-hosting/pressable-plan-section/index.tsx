@@ -14,9 +14,9 @@ import {
 	PLAN_CATEGORY_PREMIUM,
 	PLAN_CATEGORY_ENTERPRISE,
 } from 'calypso/a8c-for-agencies/sections/marketplace/pressable-overview/constants';
-import getPressablePlan, {
+import useGetPressablePlan, {
 	PressablePlan,
-} from 'calypso/a8c-for-agencies/sections/marketplace/pressable-overview/lib/get-pressable-plan';
+} from 'calypso/a8c-for-agencies/sections/marketplace/pressable-overview/hooks/use-get-pressable-plan';
 import PlanSelectionFilter from 'calypso/a8c-for-agencies/sections/marketplace/pressable-overview/plan-selection/filter';
 import { useDispatch } from 'calypso/state';
 import { recordTracksEvent } from 'calypso/state/analytics/actions';
@@ -107,6 +107,8 @@ export default function PressablePlanSection( {
 		selectedSite: null,
 		productSearchQuery: '',
 	} );
+
+	const getPressablePlan = useGetPressablePlan();
 
 	const selectedPlanInfo = selectedPlan ? getPressablePlan( selectedPlan.slug ) : null;
 

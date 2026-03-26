@@ -1,5 +1,6 @@
 import { formatNumber } from '@automattic/number-formatters';
-import getPressablePlan from 'calypso/a8c-for-agencies/sections/marketplace/pressable-overview/lib/get-pressable-plan';
+import { useMemo } from 'react';
+import useGetPressablePlan from 'calypso/a8c-for-agencies/sections/marketplace/pressable-overview/hooks/use-get-pressable-plan';
 
 export type PressableAddonType = 'sites' | 'storage' | 'visits' | 'unknown';
 
@@ -29,24 +30,24 @@ export function getPressableAddonType( productSlug: string ): PressableAddonType
 	return 'unknown';
 }
 
-export function getPressableAddonCapacityCopyContext(
-	productSlug: string
-): PressableAddonCapacityCopyContext | null {
+export default function usePressableAddonCapacityContext( productSlug: string ) {
+	const getPressablePlan = useGetPressablePlan();
 	const plan = getPressablePlan( productSlug );
 
-	if ( ! plan ) {
-		return null;
-	}
+	return useMemo( () => {
+		if ( ! plan ) {
+			return null;
+		}
+		const type = getPressableAddonType( productSlug );
 
-	const type = getPressableAddonType( productSlug );
-
-	return {
-		type,
-		install: plan.install,
-		storage: plan.storage,
-		visits: plan.visits,
-		formattedInstall: formatNumber( plan.install ),
-		formattedStorage: `${ formatNumber( plan.storage ) } GB`,
-		formattedVisits: formatNumber( plan.visits ),
-	};
+		return {
+			type,
+			install: plan.install,
+			storage: plan.storage,
+			visits: plan.visits,
+			formattedInstall: formatNumber( plan.install ),
+			formattedStorage: `${ formatNumber( plan.storage ) } GB`,
+			formattedVisits: formatNumber( plan.visits ),
+		};
+	}, [ plan, productSlug ] );
 }
