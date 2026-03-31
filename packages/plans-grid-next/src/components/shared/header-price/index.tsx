@@ -13,9 +13,21 @@ import { useTranslate } from 'i18n-calypso';
 import { usePlansGridContext } from '../../../grid-context';
 import useIsLargeCurrency from '../../../hooks/use-is-large-currency';
 import { usePlanPricingInfoFromGridPlans } from '../../../hooks/use-plan-pricing-info-from-grid-plans';
+import ClientLogoList from '../../features-grid/client-logo-list';
 import { useHeaderPriceContext } from './header-price-context';
 import type { GridPlan } from '../../../types';
 import './style.scss';
+
+const ENTERPRISE_LOGO_SLUGS = [
+	'time',
+	'slack',
+	'disney',
+	'cnn',
+	'salesforce',
+	'facebook',
+	'conde-nast',
+	'bloomberg',
+];
 
 interface HeaderPriceProps {
 	planSlug: PlanSlug;
@@ -109,7 +121,16 @@ const HeaderPrice = ( { planSlug, visibleGridPlans }: HeaderPriceProps ) => {
 		setIsAnyPlanPriceDiscounted,
 	] );
 
-	if ( isWpcomEnterpriseGridPlan( planSlug ) || ! isPricedPlan ) {
+	if ( isWpcomEnterpriseGridPlan( planSlug ) ) {
+		return (
+			<ClientLogoList
+				slugs={ ENTERPRISE_LOGO_SLUGS }
+				className="plans-grid-next-header-price__enterprise-logos"
+			/>
+		);
+	}
+
+	if ( ! isPricedPlan ) {
 		return null;
 	}
 
