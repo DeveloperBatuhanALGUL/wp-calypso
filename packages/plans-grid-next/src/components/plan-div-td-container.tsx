@@ -1,7 +1,7 @@
 const PlanDivOrTdContainer = (
 	props: (
 		| React.HTMLAttributes< HTMLDivElement >
-		| React.HTMLAttributes< HTMLTableCellElement >
+		| React.TdHTMLAttributes< HTMLTableCellElement >
 	) & { isTableCell?: boolean; scope?: string; isHeader?: boolean }
 ): JSX.Element => {
 	const { children, isTableCell, isHeader, ...otherProps } = props;
