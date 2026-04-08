@@ -1,7 +1,12 @@
+import ButtonPicker from '../../components/button-picker';
+import ColorPicker from '../../components/color-picker';
 import { EscalationButton } from '../../components/escalation-button';
+import FontPicker from '../../components/font-picker';
 import NextStepButton from '../../components/next-step-button';
+import PatternPicker from '../../components/pattern-picker';
 import UnavailableToolMessage from '../../components/unavailable-tool-message';
 import convertToolMessagesToComponents from '../convert-tool-messages-to-components';
+import isAmAbilitiesEnabled from '../is-am-abilities-enabled';
 import { isEditorPage } from '../is-editor-page';
 import type { UIMessage } from '@automattic/agenttic-client';
 
@@ -14,6 +19,23 @@ jest.mock(
 	{ virtual: true }
 );
 jest.mock( '../is-editor-page' );
+jest.mock( '../is-am-abilities-enabled' );
+jest.mock( '../../components/button-picker', () => ( { __esModule: true, default: jest.fn() } ) );
+jest.mock( '../../components/color-picker', () => ( { __esModule: true, default: jest.fn() } ) );
+jest.mock( '../../components/escalation-button', () => ( { EscalationButton: jest.fn() } ) );
+jest.mock( '../../components/font-picker', () => ( { __esModule: true, default: jest.fn() } ) );
+jest.mock( '../../components/next-step-button', () => ( {
+	__esModule: true,
+	default: jest.fn(),
+} ) );
+jest.mock( '../../components/pattern-picker', () => ( {
+	__esModule: true,
+	default: jest.fn(),
+} ) );
+jest.mock( '../../components/unavailable-tool-message', () => ( {
+	__esModule: true,
+	default: jest.fn(),
+} ) );
 
 const MockComponent = jest.fn();
 const mockOnSubmit = jest.fn();
@@ -42,7 +64,9 @@ const createToolMessage = (
 
 describe( 'convertToolMessagesToComponents', () => {
 	beforeEach( () => {
+		jest.clearAllMocks();
 		( isEditorPage as jest.Mock ).mockReturnValue( true );
+		( isAmAbilitiesEnabled as jest.Mock ).mockReturnValue( false );
 	} );
 
 	it( 'passes through user messages unchanged', () => {
@@ -347,5 +371,224 @@ describe( 'convertToolMessagesToComponents', () => {
 
 		expect( result ).toHaveLength( 1 );
 		expect( result[ 0 ] ).toMatchObject( { disabled: false } );
+	} );
+
+	describe( 'AM path', () => {
+		beforeEach( () => {
+			( isAmAbilitiesEnabled as jest.Mock ).mockReturnValue( true );
+		} );
+
+		it.each( [
+			[ 'button-picker', ButtonPicker ],
+			[ 'color-picker', ColorPicker ],
+			[ 'font-picker', FontPicker ],
+			[ 'pattern-picker', PatternPicker ],
+		] )( 'resolves %s to its AM component', ( type, expected ) => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type,
+				props: { variations: [] },
+				isCurrent: true,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+			} );
+
+			expect( result[ 0 ].content[ 0 ] ).toMatchObject( {
+				type: 'component',
+				component: expected,
+			} );
+		} );
+
+		it( 'passes props without `contentType`', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'color-picker',
+				props: { variations: [ { title: 'Bold' } ] },
+				isCurrent: true,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+			} );
+
+			expect( result[ 0 ].content[ 0 ].componentProps ).toEqual( {
+				variations: [ { title: 'Bold' } ],
+			} );
+		} );
+
+		it( 'drops unknown component types', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'unknown',
+				props: {},
+				isCurrent: true,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+			} );
+
+			expect( result ).toEqual( [] );
+		} );
+
+		it( 'does not call `getChatComponent`', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'color-picker',
+				props: { variations: [] },
+				isCurrent: true,
+			} );
+			const getChatComponent = jest.fn().mockReturnValue( jest.fn() );
+
+			convertWithDefaults( {
+				messages: [ message ],
+				getChatComponent,
+			} );
+
+			expect( getChatComponent ).not.toHaveBeenCalled();
+		} );
+
+		it( 'appends `NextStepButton` with `onSubmit` as `onMoveToNextStep` for follow-up tasks and omits `actions`', () => {
+			const data = {
+				type: 'font-picker',
+				props: { variations: [] },
+				followUpTasks: true,
+				isCurrent: true,
+			};
+			const actions = [
+				{ id: 'action-1', label: 'Do something', onClick: jest.fn() },
+			] as UIMessage[ 'actions' ];
+
+			const result = convertWithDefaults( {
+				messages: [ createToolMessage( 'big_sky__show_component', data, { actions } ) ],
+			} );
+
+			expect( result ).toHaveLength( 2 );
+			expect( result[ 0 ].actions ).toBeDefined();
+			expect( result[ 1 ].id ).toBe( 'msg-1-next-step' );
+			expect( result[ 1 ].actions ).toBeUndefined();
+			expect( result[ 1 ].content[ 0 ] ).toMatchObject( {
+				component: NextStepButton,
+				componentProps: { onMoveToNextStep: mockOnSubmit },
+			} );
+		} );
+
+		it( 'renders `UnavailableToolMessage` when not on an editor page', () => {
+			( isEditorPage as jest.Mock ).mockReturnValue( false );
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'color-picker',
+				props: {},
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+			} );
+
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ].content[ 0 ] ).toMatchObject( {
+				type: 'component',
+				component: UnavailableToolMessage,
+				componentProps: { type: 'picker' },
+			} );
+		} );
+
+		it( 'appends next-step-button only to the last active message', () => {
+			const data = {
+				type: 'color-picker',
+				props: { variations: [] },
+				followUpTasks: true,
+				isCurrent: true,
+			};
+
+			const result = convertWithDefaults( {
+				messages: [
+					createToolMessage( 'big_sky__show_component', data, { id: 'msg-1' } ),
+					createToolMessage( 'big_sky__show_component', data, { id: 'msg-2' } ),
+				],
+			} );
+
+			expect( result.map( ( m ) => m.id ) ).toEqual( [ 'msg-1', 'msg-2', 'msg-2-next-step' ] );
+		} );
+
+		it( 'disables component when `isCurrent` is false', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'button-picker',
+				props: { buttonVariations: [] },
+				followUpTasks: true,
+				isCurrent: false,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+			} );
+
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toMatchObject( { disabled: true } );
+		} );
+
+		it( 'disables component when `postId` differs from `currentPostId`', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'button-picker',
+				props: { buttonVariations: [] },
+				followUpTasks: true,
+				isCurrent: true,
+				postId: 10,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+				currentPostId: 20,
+			} );
+
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toMatchObject( { disabled: true } );
+		} );
+
+		it( 'does not disable component when `postId` matches `currentPostId`', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'color-picker',
+				props: { variations: [] },
+				isCurrent: true,
+				postId: 10,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+				currentPostId: 10,
+			} );
+
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toMatchObject( { disabled: false } );
+		} );
+
+		it( 'does not disable component when `postId` is missing from the tool message', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'color-picker',
+				props: { variations: [] },
+				isCurrent: true,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+				currentPostId: 20,
+			} );
+
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toMatchObject( { disabled: false } );
+		} );
+
+		it( 'does not disable component when `currentPostId` is undefined', () => {
+			const message = createToolMessage( 'big_sky__show_component', {
+				type: 'color-picker',
+				props: { variations: [] },
+				isCurrent: true,
+				postId: 10,
+			} );
+
+			const result = convertWithDefaults( {
+				messages: [ message ],
+			} );
+
+			expect( result ).toHaveLength( 1 );
+			expect( result[ 0 ] ).toMatchObject( { disabled: false } );
+		} );
 	} );
 } );

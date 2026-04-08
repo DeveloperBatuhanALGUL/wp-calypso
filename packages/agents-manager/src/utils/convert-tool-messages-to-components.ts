@@ -1,15 +1,39 @@
+import ButtonPicker from '../components/button-picker';
+import ColorPicker from '../components/color-picker';
 import { EscalationButton } from '../components/escalation-button';
+import FontPicker from '../components/font-picker';
 import NextStepButton from '../components/next-step-button';
+import PatternPicker from '../components/pattern-picker';
 import UnavailableToolMessage from '../components/unavailable-tool-message';
+import isAmAbilitiesEnabled from './is-am-abilities-enabled';
 import { isEditorPage } from './is-editor-page';
 import type { GetChatComponent } from './load-external-providers';
+import type { ShowComponentType } from '../abilities/types';
 import type { UIMessage, UseAgentChatReturn } from '@automattic/agenttic-client';
+
+/**
+ * Resolves a `ShowComponentType` to its AM-owned React component.
+ */
+function getAmComponent( type: ShowComponentType ): React.ComponentType | null {
+	switch ( type ) {
+		case 'button-picker':
+			return ButtonPicker as React.ComponentType;
+		case 'color-picker':
+			return ColorPicker as React.ComponentType;
+		case 'font-picker':
+			return FontPicker as React.ComponentType;
+		case 'pattern-picker':
+			return PatternPicker as React.ComponentType;
+		default:
+			return null;
+	}
+}
 
 interface Options {
 	messages: UIMessage[];
 	getChatComponent?: GetChatComponent;
 	currentPostId?: number;
-	onSubmit: UseAgentChatReturn[ 'onSubmit' ];
+	onSubmit?: UseAgentChatReturn[ 'onSubmit' ];
 }
 
 /**
@@ -77,7 +101,10 @@ export default function convertToolMessagesToComponents( {
 			}
 
 			const { type: contentType, props, followUpTasks, isCurrent, postId } = textData.data ?? {};
-			const Component = getChatComponent?.( contentType );
+			const useAmAbilities = isAmAbilitiesEnabled();
+			const Component = useAmAbilities
+				? getAmComponent( contentType )
+				: getChatComponent?.( contentType );
 
 			// No matching component found for this content type — drop the message to avoid showing raw JSON.
 			if ( ! Component ) {
@@ -99,7 +126,7 @@ export default function convertToolMessagesToComponents( {
 					{
 						type: 'component' as const,
 						component: Component,
-						componentProps: { ...props, contentType },
+						componentProps: useAmAbilities ? props : { ...props, contentType },
 					},
 				],
 				disabled: isStale,

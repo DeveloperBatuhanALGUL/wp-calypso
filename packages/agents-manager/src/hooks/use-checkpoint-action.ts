@@ -1,10 +1,13 @@
 import { createElement, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { undo, Icon } from '@wordpress/icons';
-import type { UseCheckpointReturn } from '../utils/load-external-providers';
+import isAmAbilitiesEnabled from '../utils/is-am-abilities-enabled';
+import useCheckpoint from './use-checkpoint';
+import type { UseCheckpointReturn } from './use-checkpoint';
 import type { UseAgentChatReturn, UIMessage } from '@automattic/agenttic-client';
 
 type RegisterMessageActions = UseAgentChatReturn[ 'registerMessageActions' ];
+type CheckpointActions = Pick< UseCheckpointReturn, 'hasCheckpoint' | 'restoreCheckpoint' >;
 
 /**
  * Gets the checkpoint ID embedded in a tool message, or an empty string
@@ -34,9 +37,12 @@ function getCheckpointId( message: UIMessage ): string {
  */
 export default function useCheckpointAction(
 	registerMessageActions: RegisterMessageActions,
-	checkpoint?: UseCheckpointReturn
+	externalCheckpoint?: CheckpointActions
 ): void {
-	// Ref avoids infinite re-renders caused by unstable `checkpoint` reference.
+	const amCheckpoint = useCheckpoint();
+	const checkpoint = isAmAbilitiesEnabled() ? amCheckpoint : externalCheckpoint;
+
+	// Ref ensures the `useEffect` closure always reads the latest checkpoint.
 	const checkpointRef = useRef( checkpoint );
 	checkpointRef.current = checkpoint;
 
