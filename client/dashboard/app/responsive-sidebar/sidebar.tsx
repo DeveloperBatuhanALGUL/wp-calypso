@@ -11,6 +11,8 @@ import SiteSidebar from '../../sites/site-sidebar';
 import { wpcomLink } from '../../utils/link';
 import { useAnalytics } from '../analytics';
 import { useAppContext } from '../context';
+import AgencySidebar from './agency';
+import AgencyClientSidebar from './agency-client';
 
 import './sidebar.scss';
 
@@ -56,6 +58,8 @@ function PrimaryMenuSidebar() {
 
 	return (
 		<SidebarMenu>
+			{ supports.agency && <AgencySidebar /> }
+			{ supports.agencyClient && <AgencyClientSidebar /> }
 			{ supports.sites && (
 				<SidebarMenuItem icon={ layout } to="/sites">
 					{ __( 'Sites' ) }
