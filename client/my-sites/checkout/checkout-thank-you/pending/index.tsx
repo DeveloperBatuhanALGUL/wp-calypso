@@ -290,6 +290,7 @@ function useRedirectOnTransactionSuccess( {
 			siteSlug,
 			saasRedirectUrl,
 			fromSiteSlug,
+			receipt,
 		} );
 
 		if ( ! redirectInstructions ) {

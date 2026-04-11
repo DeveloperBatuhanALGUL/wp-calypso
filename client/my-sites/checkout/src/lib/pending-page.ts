@@ -7,6 +7,7 @@ import {
 	PROCESSING,
 	ASYNC_PENDING,
 } from 'calypso/state/order-transactions/constants';
+import type { ReceiptData } from 'calypso/state/receipts/types';
 import type { OrderTransaction } from 'calypso/state/selectors/get-order-transaction';
 
 export interface PendingPageRedirectOptions {
@@ -53,6 +54,7 @@ export interface RedirectForTransactionStatusArgs {
 	 * logged in).
 	 */
 	fromSiteSlug?: string;
+	receipt?: ReceiptData;
 }
 
 /**
@@ -416,6 +418,17 @@ export function getRedirectFromPendingPage( {
 	}
 
 	if ( transaction?.processingStatus === SUCCESS ) {
+		// Check for partial failures first
+		if ( receipt?.failedPurchases && Object.keys( receipt.failedPurchases ).length > 0 ) {
+			return {
+				url: filterAllowedRedirect(
+					`${ errorUrl }?receipt_id=${ receiptId }`,
+					siteSlug || fromSiteSlug,
+					errorUrl
+				),
+			};
+		}
+
 		// If the order is complete, we can redirect to the final page.
 		const { receiptId: transactionReceiptId } = transaction;
 
