@@ -371,6 +371,7 @@ export function getRedirectFromPendingPage( {
 	siteSlug,
 	saasRedirectUrl,
 	fromSiteSlug,
+	receipt,
 }: RedirectForTransactionStatusArgs ): RedirectInstructions | undefined {
 	const checkoutUrl = siteSlug ? `/checkout/${ siteSlug }` : '/checkout/no-site';
 	const errorUrl = '/checkout/failed-purchases';
