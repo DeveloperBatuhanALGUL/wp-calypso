@@ -687,3 +687,17 @@ body.post-new-php.agents-manager-sidebar-container {
 		}
 	}
 }
+
+// Split-screen override: when the `is-split-screen` class is set on the
+// sidebar container (toggled by AgentDock based on the
+// `isSplitScreen` store state), flip the `--am-sidebar-width` CSS
+// custom property to 50vw. All existing `$sidebar-width` consumers
+// automatically pick this up because `$sidebar-width` was redefined in
+// `variables.scss` as `var( --am-sidebar-width, 350px )`.
+//
+// Scoped to `.agents-manager-sidebar-container` (the docked host
+// container) so the override only affects docked sessions. Floating
+// sessions stay at the default width.
+body.agents-manager-sidebar-container.is-split-screen {
+	--am-sidebar-width: 50vw;
+}

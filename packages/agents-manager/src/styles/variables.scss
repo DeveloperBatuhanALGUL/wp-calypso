@@ -1,7 +1,13 @@
 @import '@wordpress/base-styles/variables';
 
 $layout-spacing: 16px;
-$sidebar-width: 350px;
+// `$sidebar-width` used to be a hard-coded `350px`. Wrapping it in a
+// CSS custom property keeps the default behaviour while allowing the
+// split-screen toggle to override the width at runtime (see the
+// `.agents-manager-sidebar-container--split-screen` rule in
+// `components/agent-dock/style.scss`). Consumers that want the old
+// constant behaviour inherit the fallback unchanged.
+$sidebar-width: var( --am-sidebar-width, 350px );
 $chat-header-height: 38px;
 $main-border-radius: 8px;
 $transition-duration: 0.2s;

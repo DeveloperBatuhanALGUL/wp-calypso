@@ -120,6 +120,21 @@ export type UseCheckpointHook = () => UseCheckpointReturn;
 
 export type { ImageUploadHook };
 
+/**
+ * Optional capability flags that a provider can declare to opt into
+ * AM chat-dock features that aren't on by default. Merged across providers
+ * via logical OR, so any provider that needs a feature gets it.
+ */
+export interface ProviderCapabilities {
+	/**
+	 * Whether the "Split screen sidebar" menu item should appear in the chat
+	 * header. Declared by providers whose host surface can cope with a 50vw
+	 * sidebar (e.g. jetpack-ai-sidebar's post editor). Other AM consumers
+	 * leave this unset / false so their layouts aren't affected.
+	 */
+	supportsSplitScreen?: boolean;
+}
+
 export interface LoadedProviders {
 	toolProvider?: ToolProvider;
 	contextProvider?: ContextProvider;
@@ -134,6 +149,7 @@ export interface LoadedProviders {
 	siteBuildUtils?: SiteBuildUtils;
 	useImageUpload?: ImageUploadHook;
 	useCheckpoint?: UseCheckpointHook;
+	capabilities?: ProviderCapabilities;
 }
 
 /**
@@ -163,6 +179,9 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 	let mergedSiteBuildUtils: SiteBuildUtils | undefined;
 	let mergedImageUpload: ImageUploadHook | undefined;
 	let mergedUseCheckpoint: UseCheckpointHook | undefined;
+	// Capabilities are OR-merged across providers — any provider opting
+	// into a feature enables it for the whole dock session.
+	const mergedCapabilities: ProviderCapabilities = {};
 
 	// Collect exports that need to be merged across all providers.
 	const allToolProviders: ToolProvider[] = [];
@@ -233,6 +252,20 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 		}
 		if ( module.useCheckpoint && ! mergedUseCheckpoint ) {
 			mergedUseCheckpoint = module.useCheckpoint;
+		}
+
+		// OR-merge capability flags: any provider that opts in enables the
+		// feature across the dock. `module.capabilities` can be a plain
+		// object OR a lazy `Proxy` (see e.g. `jetpack-ai-sidebar.provider.mjs`
+		// which wraps a runtime `window.__JetpackAIProvider.capabilities` lookup).
+		// `Object.entries()` returns `[]` on a Proxy with an empty target, so we
+		// must probe each known capability key by direct property access to
+		// hit the Proxy's `get` trap.
+		if ( module.capabilities && typeof module.capabilities === 'object' ) {
+			const caps = module.capabilities as ProviderCapabilities;
+			if ( caps.supportsSplitScreen ) {
+				mergedCapabilities.supportsSplitScreen = true;
+			}
 		}
 	}
 
@@ -373,5 +406,6 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 		siteBuildUtils: mergedSiteBuildUtils,
 		useImageUpload: mergedImageUpload,
 		useCheckpoint: mergedUseCheckpoint,
+		capabilities: mergedCapabilities,
 	};
 }

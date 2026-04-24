@@ -68,6 +68,14 @@ const floatingPosition: Reducer< 'left' | 'right', AgentsManagerAction > = (
 	return state;
 };
 
+const isSplitScreen: Reducer< boolean, AgentsManagerAction > = ( state = false, action ) => {
+	switch ( action.type ) {
+		case 'AGENTS_MANAGER_SET_SPLIT_SCREEN':
+			return action.isSplitScreen;
+	}
+	return state;
+};
+
 const reducer = combineReducers( {
 	isOpen,
 	isDocked,
@@ -76,6 +84,7 @@ const reducer = combineReducers( {
 	isLoading,
 	hasLoaded,
 	floatingPosition,
+	isSplitScreen,
 } );
 
 export type State = ReturnType< typeof reducer >;
