@@ -100,6 +100,22 @@ import type { ChangeEvent } from 'react';
 
 import './style.scss';
 
+/**
+ * How long to keep the loading spinner visible after the user clicks "Remove"
+ * before navigating away. Short enough to feel snappy; long enough that the
+ * busy state registers as intentional feedback rather than a flash.
+ */
+const REMOVE_BUSY_STATE_DELAY_MS = 500;
+
+/**
+ * How long the query-cache guard stays active after a remove/cancel-and-refund
+ * mutation. Server eventual consistency means the deleted purchase can reappear
+ * in API responses for a few seconds; the guard re-strips it each time. After
+ * this TTL the guard unsubscribes and a final `invalidateQueries` fetches the
+ * authoritative state.
+ */
+const REMOVE_CACHE_GUARD_TTL_MS = 15_000;
+
 type TopNoticeArgs = {
 	surveyShown?: boolean;
 	showDomainOptionsStep?: boolean;
@@ -1146,10 +1162,23 @@ function CancelPurchaseInner() {
 			try {
 				const fresh = await queryClient.fetchQuery( userPurchasesQuery() );
 				stillExists = Boolean( fresh?.some( ( p: Purchase ) => p.ID === purchase.ID ) );
-			} catch {
-				// Verification fetch failed; fall through to error path.
+			} catch ( verifyError ) {
+				// Verification fetch also failed — we can't confirm whether the
+				// removal succeeded. Surface the original error so the user knows
+				// something went wrong, rather than silently showing a stale
+				// success snack.
+				recordTracksEvent( 'calypso_purchases_remove_verify_failed', {
+					product_slug: purchase.product_slug,
+					purchase_id: purchase.ID,
+					original_error: error?.message,
+					verify_error: ( verifyError as Error )?.message,
+				} );
 			}
 			if ( ! stillExists ) {
+				recordTracksEvent( 'calypso_purchases_remove_504_recovery', {
+					product_slug: purchase.product_slug,
+					purchase_id: purchase.ID,
+				} );
 				return;
 			}
 			// Mutation genuinely failed — restore the optimistic removal and
@@ -1185,16 +1214,15 @@ function CancelPurchaseInner() {
 			}
 		} );
 
-		// Clean up after 15 seconds — server should have settled.
+		// Clean up after the cache guard TTL — server should have settled.
 		setTimeout( () => {
 			unsubscribeGuard();
 			// Final refetch to get the authoritative server state.
 			queryClient.invalidateQueries( userPurchasesQuery() );
-		}, 15000 );
+		}, REMOVE_CACHE_GUARD_TTL_MS );
 
 		// Keep the busy state visible briefly so the click-to-leave transition
-		// feels like a real action rather than an instant page swap. 500ms is
-		// enough to register the loading feedback without feeling laggy.
+		// feels like a real action rather than an instant page swap.
 		setTimeout( () => {
 			// Optimistically strip the purchase from the cached list so the
 			// destination page renders without it immediately.
@@ -1241,7 +1269,7 @@ function CancelPurchaseInner() {
 					} );
 				} )
 				.catch( handleError );
-		}, 500 );
+		}, REMOVE_BUSY_STATE_DELAY_MS );
 	};
 
 	const submitCancelAndRefundPurchase = ( purchase: Purchase ) => {
