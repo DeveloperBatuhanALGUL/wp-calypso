@@ -6,6 +6,7 @@ import type {
 	Purchase,
 	Domain,
 	AtomicTransfer,
+	Site,
 	UpgradesCancelFeaturesResponse,
 } from '@automattic/api-core';
 
@@ -15,6 +16,8 @@ interface CancellationPreSurveyContentProps {
 	includedDomainPurchase?: Purchase;
 	atomicTransfer?: AtomicTransfer;
 	selectedDomain?: Domain;
+	site?: Site;
+	activeMarketplaceSubscriptions?: Purchase[];
 	state: CancelPurchaseState;
 	skipSurvey?: boolean;
 	purchaseCancelFeatures?: UpgradesCancelFeaturesResponse;
@@ -35,6 +38,8 @@ export default function CancellationPreSurveyContent( {
 	includedDomainPurchase,
 	atomicTransfer,
 	selectedDomain,
+	site,
+	activeMarketplaceSubscriptions,
 	state,
 	skipSurvey,
 	purchaseCancelFeatures,
@@ -66,6 +71,8 @@ export default function CancellationPreSurveyContent( {
 			includedDomainPurchase={ includedDomainPurchase }
 			atomicTransfer={ atomicTransfer }
 			selectedDomain={ selectedDomain }
+			site={ site }
+			activeMarketplaceSubscriptions={ activeMarketplaceSubscriptions }
 			state={ state }
 			skipSurvey={ skipSurvey }
 			purchaseCancelFeatures={ purchaseCancelFeatures }

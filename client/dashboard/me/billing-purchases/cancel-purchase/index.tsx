@@ -1881,6 +1881,8 @@ function CancelPurchaseInner() {
 									includedDomainPurchase={ includedDomainPurchase }
 									atomicTransfer={ atomicTransfer }
 									selectedDomain={ selectedDomain }
+									site={ site }
+									activeMarketplaceSubscriptions={ activeSubscriptions }
 									state={ state }
 									skipSurvey={ skipSurvey }
 									purchaseCancelFeatures={ purchaseCancelFeatures }
