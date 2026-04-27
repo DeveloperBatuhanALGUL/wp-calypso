@@ -264,12 +264,17 @@ export const purchaseSettingsRoute = createRoute( {
 		};
 	},
 	path: '$purchaseId',
-	validateSearch: ( search ): { refunded?: true; cancelled?: true } => {
+	validateSearch: (
+		search
+	): { refunded?: true; cancelled?: true; source?: 'auto-renew-toggle' } => {
 		const isRefunded = search.refunded === true || search.refunded === 'true';
 		const isCancelled = search.cancelled === true || search.cancelled === 'true';
+		const source =
+			search.source === 'auto-renew-toggle' ? ( 'auto-renew-toggle' as const ) : undefined;
 		return {
 			...( isRefunded ? { refunded: true as const } : {} ),
 			...( isCancelled ? { cancelled: true as const } : {} ),
+			...( source ? { source } : {} ),
 		};
 	},
 } );
@@ -384,7 +389,11 @@ export const cancelPurchaseRoute = createRoute( {
 	head: ( {
 		loaderData,
 	}: {
-		loaderData?: { purchase?: Purchase; intent?: 'cancel' | 'remove' };
+		loaderData?: {
+			purchase?: Purchase;
+			intent?: 'cancel' | 'remove';
+			source?: 'auto-renew-toggle';
+		};
 	} ) => {
 		// URL intent is authoritative — if the user clicked Remove on Purchase
 		// Settings the tab title should say "Remove" regardless of the
@@ -414,17 +423,22 @@ export const cancelPurchaseRoute = createRoute( {
 	},
 	getParentRoute: () => purchaseSettingsRoute,
 	path: 'cancel',
-	validateSearch: ( search ): { intent?: 'cancel' | 'remove' } => {
-		return search.intent === 'cancel' || search.intent === 'remove'
-			? { intent: search.intent }
-			: {};
+	validateSearch: ( search ): { intent?: 'cancel' | 'remove'; source?: 'auto-renew-toggle' } => {
+		const source =
+			search.source === 'auto-renew-toggle' ? ( 'auto-renew-toggle' as const ) : undefined;
+		return {
+			...( search.intent === 'cancel' || search.intent === 'remove'
+				? { intent: search.intent }
+				: {} ),
+			...( source ? { source } : {} ),
+		};
 	},
-	loaderDeps: ( { search } ) => ( { intent: search.intent } ),
-	loader: async ( { parentMatchPromise, deps: { intent } } ) => {
+	loaderDeps: ( { search } ) => ( { intent: search.intent, source: search.source } ),
+	loader: async ( { parentMatchPromise, deps: { intent, source } } ) => {
 		const parentMatch = await parentMatchPromise;
 		const purchase = parentMatch.loaderData?.purchase;
 		if ( ! purchase ) {
-			return { purchase: undefined, intent };
+			return { purchase: undefined, intent, source };
 		}
 		await Promise.all( [
 			queryClient.ensureQueryData( sitePurchasesQuery( purchase.blog_id ) ),
@@ -433,7 +447,7 @@ export const cancelPurchaseRoute = createRoute( {
 			queryClient.ensureQueryData( plansQuery() ),
 			queryClient.ensureQueryData( purchaseCancelFeaturesQuery( purchase.ID ) ),
 		] );
-		return { purchase, intent };
+		return { purchase, intent, source };
 	},
 } ).lazy( () =>
 	import( '../../me/billing-purchases/cancel-purchase' ).then( ( d ) =>

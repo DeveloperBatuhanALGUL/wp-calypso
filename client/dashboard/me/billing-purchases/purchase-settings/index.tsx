@@ -752,6 +752,7 @@ function ManageSubscriptionCard( { purchase }: { purchase: Purchase } ) {
 		isPending: isMutationPending,
 	} = useMutation( userPurchaseSetAutoRenewQuery() );
 	const { user } = useAuth();
+	const navigate = useNavigate();
 	return (
 		<Card>
 			<CardBody>
@@ -761,6 +762,20 @@ function ManageSubscriptionCard( { purchase }: { purchase: Purchase } ) {
 					form={ form }
 					onChange={ ( newData ) => {
 						if ( newData.is_auto_renew_enabled !== purchase.is_auto_renew_enabled ) {
+							if (
+								! newData.is_auto_renew_enabled &&
+								isEnabled( 'purchases/split-cancel-remove' )
+							) {
+								navigate( {
+									to: cancelPurchaseRoute.fullPath,
+									params: { purchaseId: purchase.ID },
+									search: {
+										intent: 'cancel' as const,
+										source: 'auto-renew-toggle' as const,
+									},
+								} );
+								return;
+							}
 							setAutoRenew( { purchaseId: purchase.ID, autoRenew: newData.is_auto_renew_enabled } );
 						}
 					} }

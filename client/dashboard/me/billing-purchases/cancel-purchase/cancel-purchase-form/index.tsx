@@ -37,7 +37,7 @@ interface CancelPurchaseFormProps {
 	atomicTransfer?: Pick< AtomicTransfer, 'created_at' >;
 	cancelBundledDomain?: boolean;
 	cancellationInProgress?: boolean;
-	intent?: 'cancel' | 'remove' | null;
+	intent?: 'cancel' | 'remove' | 'auto-renew' | null;
 	cancellationOffer?: Pick<
 		CancellationOffer,
 		'discounted_periods' | 'raw_price' | 'currency_code' | 'original_price'

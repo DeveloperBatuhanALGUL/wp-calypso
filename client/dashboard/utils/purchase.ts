@@ -735,15 +735,19 @@ export function getCancelIntentFromSearch( search: { intent?: unknown } ): Cance
 	return search.intent === 'cancel' || search.intent === 'remove' ? search.intent : null;
 }
 
-export type DisplayVariant = 'cancel' | 'remove';
+export type DisplayVariant = 'cancel' | 'remove' | 'auto-renew';
 
 /**
  * Derives which screen variant to show from intent, with a flow-type fallback when intent is absent.
  */
 export function getDisplayVariant(
 	intent: CancelIntent | null,
-	flowType: CancelFlowType
+	flowType: CancelFlowType,
+	source?: 'auto-renew-toggle' | null
 ): DisplayVariant {
+	if ( source === 'auto-renew-toggle' ) {
+		return 'auto-renew';
+	}
 	if ( intent === 'remove' ) {
 		return 'remove';
 	}
@@ -751,6 +755,12 @@ export function getDisplayVariant(
 		return 'cancel';
 	}
 	return flowType === CANCEL_FLOW_TYPE.REMOVE ? 'remove' : 'cancel';
+}
+
+export function getCancelSourceFromSearch( search: {
+	source?: unknown;
+} ): 'auto-renew-toggle' | null {
+	return search.source === 'auto-renew-toggle' ? search.source : null;
 }
 
 /**

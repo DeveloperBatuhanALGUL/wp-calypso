@@ -20,7 +20,7 @@ type CancellationReasonProps = {
 	onChange: ChangeCallback;
 	plans: PlanProduct[];
 	onDetailsChange: DetailsChangeCallback;
-	intent?: 'cancel' | 'remove';
+	intent?: 'cancel' | 'remove' | 'auto-renew';
 };
 
 function CancellationReason( {
@@ -68,6 +68,11 @@ function CancellationReason( {
 	};
 
 	const getReasonLabel = () => {
+		if ( intent === 'auto-renew' ) {
+			return isCancelPostMutation
+				? __( 'Why did you decide to disable auto-renew?' )
+				: __( 'Why would you like to turn off auto-renew?' );
+		}
 		if ( intent === 'remove' ) {
 			return __( 'Why would you like to remove?' );
 		}
@@ -167,7 +172,7 @@ type FeedbackStepProps = {
 	onChangeCancellationReason: ChangeCallback;
 	onChangeCancellationReasonDetails: ChangeCallback;
 	onChangeImportFeedback: ChangeCallback;
-	intent?: 'cancel' | 'remove';
+	intent?: 'cancel' | 'remove' | 'auto-renew';
 };
 
 export default function FeedbackStep( {

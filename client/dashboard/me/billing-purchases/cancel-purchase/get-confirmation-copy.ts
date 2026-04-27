@@ -122,9 +122,11 @@ export function formatTimeRemaining( expiryDate: string | Date, from: Date = new
 	);
 }
 
+type ConfirmationIntent = CancelIntent | 'auto-renew';
+
 type ConfirmationCopyArgs = {
 	purchase: Purchase;
-	intent: CancelIntent;
+	intent: ConfirmationIntent;
 	skipSurvey?: boolean;
 };
 
@@ -135,6 +137,9 @@ type ConfirmationCopyArgs = {
  *   "Remove {productName}" for individual products).
  */
 export function getCancellationHeading( { purchase, intent }: ConfirmationCopyArgs ): string {
+	if ( intent === 'auto-renew' ) {
+		return __( 'Turn off auto-renew' );
+	}
 	if ( intent === 'cancel' ) {
 		return __( 'Cancel subscription' );
 	}
@@ -170,7 +175,7 @@ export function getCancellationHeading( { purchase, intent }: ConfirmationCopyAr
  * managed or already-expired purchases).
  */
 export function getTopNoticeCopy( { purchase, intent }: ConfirmationCopyArgs ): string | null {
-	if ( intent !== 'cancel' ) {
+	if ( intent !== 'cancel' && intent !== 'auto-renew' ) {
 		return null;
 	}
 	if ( ! purchase.expiry_date ) {
@@ -479,6 +484,12 @@ export function getButtonLabels( { purchase, intent, skipSurvey }: ConfirmationC
 					secondary: __( 'Keep subscription' ),
 				};
 		}
+	}
+	if ( intent === 'auto-renew' ) {
+		return {
+			primary: __( 'Turn off auto-renew' ),
+			secondary: __( 'Keep auto-renew on' ),
+		};
 	}
 	// Cancel intent: always "Cancel subscription" / "Keep subscription" to match
 	// the heading and Purchase Settings button. Under the split flag the mutation

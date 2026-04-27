@@ -46,7 +46,10 @@ import { shuffleArray } from '../../../utils/collection';
 import {
 	CANCEL_FLOW_TYPE,
 	CancelFlowType,
+	CancelIntent,
+	DisplayVariant,
 	getCancelIntentFromSearch,
+	getCancelSourceFromSearch,
 	getDisplayVariant,
 	getIncludedDomainPurchase,
 	getMutationFlowType,
@@ -103,9 +106,9 @@ import './style.scss';
 type TopNoticeArgs = {
 	surveyShown?: boolean;
 	showDomainOptionsStep?: boolean;
-	displayVariant: 'cancel' | 'remove';
+	displayVariant: DisplayVariant;
 	purchase: Purchase;
-	intent: 'cancel' | 'remove' | null;
+	intent: CancelIntent | null;
 	showRefundEligibilityNotice: boolean;
 	onClaimRefund: () => void;
 };
@@ -350,8 +353,10 @@ export default function CancelPurchase() {
 	// swaps intent (e.g. navigating from Cancel to Remove on Purchase Settings).
 	// Keying the inner component on intent lets React remount it, resetting all
 	// local state to its initial values.
-	const intent = getCancelIntentFromSearch( useSearch( { from: cancelPurchaseRoute.fullPath } ) );
-	return <CancelPurchaseInner key={ intent ?? 'fallback' } />;
+	const search = useSearch( { from: cancelPurchaseRoute.fullPath } );
+	const intent = getCancelIntentFromSearch( search );
+	const source = getCancelSourceFromSearch( search );
+	return <CancelPurchaseInner key={ `${ intent ?? 'fallback' }-${ source ?? '' }` } />;
 }
 
 function CancelPurchaseInner() {
@@ -469,8 +474,10 @@ function CancelPurchaseInner() {
 	// Settings (behind the purchases/split-cancel-remove flag). When present,
 	// it drives both the screen variant (copy) and the backend mutation.
 	// When absent (flag-off, old deep link), fall back to today's flowType heuristic.
-	const intent = getCancelIntentFromSearch( useSearch( { from: cancelPurchaseRoute.fullPath } ) );
-	const displayVariant = getDisplayVariant( intent, flowType );
+	const cancelSearch = useSearch( { from: cancelPurchaseRoute.fullPath } );
+	const intent = getCancelIntentFromSearch( cancelSearch );
+	const source = getCancelSourceFromSearch( cancelSearch );
+	const displayVariant = getDisplayVariant( intent, flowType, source );
 	const mutationFlowType = getMutationFlowType( intent, purchase );
 
 	const cancellationOffer = cancellationOffers?.length ? cancellationOffers[ 0 ] : undefined;
@@ -803,7 +810,7 @@ function CancelPurchaseInner() {
 							navigate( {
 								to: purchaseSettingsRoute.fullPath,
 								params: { purchaseId: purchase.ID },
-								search: { cancelled: true },
+								search: { cancelled: true as const, ...( source ? { source } : {} ) },
 							} );
 							return;
 						}
@@ -917,7 +924,7 @@ function CancelPurchaseInner() {
 					navigate( {
 						to: purchaseSettingsRoute.fullPath,
 						params: { purchaseId: purchase.ID },
-						search: { cancelled: true },
+						search: { cancelled: true as const, ...( source ? { source } : {} ) },
 					} )
 			: undefined;
 
@@ -1487,7 +1494,7 @@ function CancelPurchaseInner() {
 			navigate( {
 				to: purchaseSettingsRoute.fullPath,
 				params: { purchaseId: purchase.ID },
-				search: { cancelled: true },
+				search: { cancelled: true as const, ...( source ? { source } : {} ) },
 			} );
 			return;
 		}
@@ -1794,7 +1801,7 @@ function CancelPurchaseInner() {
 			cancelBundledDomain={ state.cancelBundledDomain }
 			cancellationInProgress={ state.isLoading }
 			cancellationOffer={ cancellationOffer }
-			intent={ intent }
+			intent={ displayVariant === 'auto-renew' ? 'auto-renew' : intent }
 			clickNext={ clickNext }
 			closeDialog={ closeDialog }
 			onSkipSurvey={ onSkipSurvey }

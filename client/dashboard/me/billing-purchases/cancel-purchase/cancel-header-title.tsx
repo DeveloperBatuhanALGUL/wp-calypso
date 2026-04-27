@@ -20,11 +20,14 @@ export default function CancelHeaderTitle( {
 	if ( surveyStep === CANCELLATION_OFFER_STEP ) {
 		return __( 'Thanks for your feedback' );
 	}
+	if ( mutationFired && displayVariant === 'auto-renew' ) {
+		return __( 'Auto-renew disabled' );
+	}
 	if ( mutationFired && displayVariant !== 'remove' ) {
 		return __( 'Cancelation confirmed' );
 	}
 	return getCancellationHeading( {
 		purchase,
-		intent: displayVariant === 'remove' ? 'remove' : 'cancel',
+		intent: displayVariant,
 	} );
 }

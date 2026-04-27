@@ -40,19 +40,29 @@ export default function ConfirmCheckbox( {
 	const { setNewMessagingChat } = useHelpCenter();
 	const handleContactClick = () => {
 		setNewMessagingChat( {
-			initialMessage:
-				displayVariant === 'remove'
-					? `I have questions about removing my ${ purchase.product_name }. Can I speak with a human?`
-					: `I have questions about cancelling my ${ purchase.product_name }. Can I speak with a human?`,
+			initialMessage: ( () => {
+				if ( displayVariant === 'remove' ) {
+					return `I have questions about removing my ${ purchase.product_name }. Can I speak with a human?`;
+				}
+				if ( displayVariant === 'auto-renew' ) {
+					return `I have questions about turning off auto-renew for my ${ purchase.product_name }. Can I speak with a human?`;
+				}
+				return `I have questions about cancelling my ${ purchase.product_name }. Can I speak with a human?`;
+			} )(),
 			siteUrl: purchase.site_slug,
 			siteId: String( purchase.blog_id ),
 		} );
 	};
 
-	const supportHeadingText =
-		displayVariant === 'remove'
-			? __( 'Questions before you remove?' )
-			: __( 'Have a question before canceling?' );
+	const supportHeadingText = ( () => {
+		if ( displayVariant === 'remove' ) {
+			return __( 'Questions before you remove?' );
+		}
+		if ( displayVariant === 'auto-renew' ) {
+			return __( 'Have a question before turning off auto-renew?' );
+		}
+		return __( 'Have a question before canceling?' );
+	} )();
 
 	const planConfirmationLabel = getCheckboxLabel();
 

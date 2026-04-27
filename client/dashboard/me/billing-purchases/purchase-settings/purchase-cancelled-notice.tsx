@@ -12,9 +12,11 @@ import type { Purchase } from '@automattic/api-core';
  */
 export function PurchaseCancelledNotice( {
 	purchase,
+	source,
 	onClose,
 }: {
 	purchase: Purchase;
+	source?: 'auto-renew-toggle' | null;
 	onClose: () => void;
 } ) {
 	const expiryDate = intlFormat(
@@ -22,6 +24,21 @@ export function PurchaseCancelledNotice( {
 		{ dateStyle: 'long' },
 		{ locale: 'en-US' }
 	);
+
+	if ( source === 'auto-renew-toggle' ) {
+		const productNoun = getProductNoun( purchase );
+		return (
+			<Notice variant="success" onClose={ onClose }>
+				{ sprintf(
+					/* translators: %(productNoun)s is plan/domain/email/theme/plugin/subscription, %(expiryDate)s is a date like "April 21, 2027" */
+					__(
+						'Auto-renew has been disabled. You won\u2019t be billed again, and you\u2019ll continue to have access to the %(productNoun)s until %(expiryDate)s.'
+					),
+					{ productNoun, expiryDate }
+				) }
+			</Notice>
+		);
+	}
 
 	if ( purchase.will_atomic_revert_after_removal ) {
 		const exportUrl = `https://${ purchase.domain }/wp-admin/export.php`;
