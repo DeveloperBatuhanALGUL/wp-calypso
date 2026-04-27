@@ -2,42 +2,8 @@ import { Button } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { intlFormat } from 'date-fns';
 import Notice from '../../../components/notice';
+import { getProductNoun } from '../../../utils/purchase';
 import type { Purchase } from '@automattic/api-core';
-
-/**
- * Plain-English noun for a purchase ("plan" / "domain" / "email" / "theme" /
- * "plugin" / "subscription"). Used by the cancelled success notice and by the
- * remove-success snackbar.
- */
-export function getProductNoun( purchase: Purchase ): string {
-	if ( purchase.is_plan ) {
-		return __( 'plan' );
-	}
-	if ( purchase.is_domain_registration ) {
-		return __( 'domain' );
-	}
-	const slug = purchase.product_slug ?? '';
-	if (
-		slug.startsWith( 'wp_titan_mail' ) ||
-		slug === 'gapps' ||
-		slug === 'gapps_extra_license' ||
-		slug === 'gapps_business' ||
-		slug === 'gapps_business_extra_license' ||
-		slug.startsWith( 'wp_google_workspace_' )
-	) {
-		return __( 'email' );
-	}
-	if ( purchase.product_type === 'marketplace_theme' ) {
-		return __( 'theme' );
-	}
-	if (
-		purchase.product_type?.startsWith( 'marketplace' ) ||
-		purchase.product_type === 'saas_plugin'
-	) {
-		return __( 'plugin' );
-	}
-	return __( 'subscription' );
-}
 
 /**
  * Transient success notice shown on Purchase Settings after a cancel.

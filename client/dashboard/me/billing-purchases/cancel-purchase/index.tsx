@@ -61,8 +61,8 @@ import {
 	isAkismetProduct,
 	isPartnerPurchase,
 	isOneTimePurchase,
+	getProductNoun,
 } from '../../../utils/purchase';
-import { getProductNoun } from '../purchase-settings/purchase-cancelled-notice';
 import CancelHeaderTitle from './cancel-header-title';
 import CancelPurchaseForm from './cancel-purchase-form';
 import {
@@ -109,6 +109,12 @@ type TopNoticeArgs = {
 	showRefundEligibilityNotice: boolean;
 	onClaimRefund: () => void;
 };
+
+/**
+ * How long the cache-subscription guard stays active after a remove mutation,
+ * re-stripping stale server data that still includes the just-deleted purchase.
+ */
+const CACHE_GUARD_DURATION_MS = 15_000;
 
 function renderTopNotice( args: TopNoticeArgs ) {
 	const {
@@ -919,7 +925,6 @@ function CancelPurchaseInner() {
 		setState( ( state ) => ( {
 			...state,
 			domainConfirmationConfirmed: checked,
-			// customerConfirmedUnderstanding: checked,
 		} ) );
 
 		// Record tracks event for domain confirmation checkbox
@@ -1190,58 +1195,53 @@ function CancelPurchaseInner() {
 			unsubscribeGuard();
 			// Final refetch to get the authoritative server state.
 			queryClient.invalidateQueries( userPurchasesQuery() );
-		}, 15000 );
+		}, CACHE_GUARD_DURATION_MS );
 
-		// Keep the busy state visible briefly so the click-to-leave transition
-		// feels like a real action rather than an instant page swap. 500ms is
-		// enough to register the loading feedback without feeling laggy.
-		setTimeout( () => {
-			// Optimistically strip the purchase from the cached list so the
-			// destination page renders without it immediately.
-			stripPurchaseFromList();
+		// Optimistically strip the purchase from the cached list so the
+		// destination page renders without it immediately.
+		stripPurchaseFromList();
 
-			// Show the success snackbar before navigating. @wordpress/notices is a
-			// global store so the snack persists across navigation; the per-call
-			// mutation callbacks (.mutate's onSuccess) stop firing after the
-			// component unmounts, so we fire the snack optimistically here.
-			showSuccessSnack();
+		// Show the success snackbar before navigating. @wordpress/notices is a
+		// global store so the snack persists across navigation; the per-call
+		// mutation callbacks (.mutate's onSuccess) stop firing after the
+		// component unmounts, so we fire the snack optimistically here.
+		showSuccessSnack();
 
-			// Navigate BEFORE firing the mutation. This unmounts the cancel page
-			// and its useSuspenseQuery(purchaseQuery(id)) observer, so the
-			// invalidation cascade triggered by the mutation's built-in onSuccess
-			// can't cause a 404-throw on the now-deleted purchase.
-			navigate( { to: purchasesRoute.to } );
+		// Navigate BEFORE firing the mutation. This unmounts the cancel page
+		// and its useSuspenseQuery(purchaseQuery(id)) observer, so the
+		// invalidation cascade triggered by the mutation's built-in onSuccess
+		// can't cause a 404-throw on the now-deleted purchase.
+		navigate( { to: purchasesRoute.to } );
 
-			// Use mutateAsync so the resolution is tied to the promise
-			// (independent of the observer) rather than the per-call callbacks
-			// that stop firing after unmount.
-			const mutationPromise =
-				effectiveFlowType === CANCEL_FLOW_TYPE.CANCEL_WITH_REFUND
-					? cancelAndRefundMutation
-							.mutateAsync( {
-								purchaseId: purchase.ID,
-								options: {
-									product_id: purchase.product_id,
-									cancel_bundled_domain: cancelBundledDomain ?? false,
-								},
-							} )
-							.then( () => {
-								if ( purchase.is_plan ) {
-									cancelAllMarketplaceSubscriptions();
-								}
-							} )
-					: removePurchaseMutator.mutateAsync( purchase.ID ).then( () => undefined );
+		// Use mutateAsync so the resolution is tied to the promise
+		// (independent of the observer) rather than the per-call callbacks
+		// that stop firing after unmount.
+		const mutationPromise =
+			effectiveFlowType === CANCEL_FLOW_TYPE.CANCEL_WITH_REFUND
+				? cancelAndRefundMutation
+						.mutateAsync( {
+							purchaseId: purchase.ID,
+							options: {
+								product_id: purchase.product_id,
+								cancel_bundled_domain: cancelBundledDomain ?? false,
+							},
+						} )
+						.then( () => {
+							if ( purchase.is_plan ) {
+								cancelAllMarketplaceSubscriptions();
+							}
+						} )
+				: removePurchaseMutator.mutateAsync( purchase.ID ).then( () => undefined );
 
-			mutationPromise
-				.then( () => {
-					// Evict the individual purchase query so a stray
-					// prefix-matched invalidation can't 404-throw.
-					queryClient.removeQueries( {
-						queryKey: purchaseQuery( purchase.ID ).queryKey,
-					} );
-				} )
-				.catch( handleError );
-		}, 500 );
+		mutationPromise
+			.then( () => {
+				// Evict the individual purchase query so a stray
+				// prefix-matched invalidation can't 404-throw.
+				queryClient.removeQueries( {
+					queryKey: purchaseQuery( purchase.ID ).queryKey,
+				} );
+			} )
+			.catch( handleError );
 	};
 
 	const submitCancelAndRefundPurchase = ( purchase: Purchase ) => {
