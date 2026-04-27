@@ -362,6 +362,22 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 		page.redirect( redirectPath );
 	};
 
+	getCancelledRedirectUrl() {
+		const managePurchaseUrl = ( this.props.getManagePurchaseUrlFor ?? managePurchase )(
+			this.props.siteSlug,
+			this.props.purchaseId
+		);
+		const backupRedirect = this.props.purchaseListUrl ?? purchasesRoot;
+		if ( ! managePurchaseUrl ) {
+			return backupRedirect;
+		}
+		const params = new URLSearchParams( { cancelled: 'true' } );
+		if ( this.props.source === 'auto-renew-toggle' ) {
+			params.set( 'source', 'auto-renew-toggle' );
+		}
+		return `${ managePurchaseUrl }?${ params.toString() }`;
+	}
+
 	onCancelConfirmationStateChange = ( newState: Partial< CancelPurchaseState > ) => {
 		this.setState( ( state ) => ( {
 			...state,
@@ -397,14 +413,7 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 				if ( this.props.hasCompletedCancelPurchaseSurvey ) {
 					this.props.refreshSitePlans( purchase.siteId );
 					this.props.clearPurchases();
-					const managePurchaseUrl = ( this.props.getManagePurchaseUrlFor ?? managePurchase )(
-						this.props.siteSlug,
-						this.props.purchaseId
-					);
-					const backupRedirect = this.props.purchaseListUrl ?? purchasesRoot;
-					page.redirect(
-						managePurchaseUrl ? managePurchaseUrl + '?cancelled=true' : backupRedirect
-					);
+					page.redirect( this.getCancelledRedirectUrl() );
 					return;
 				}
 				this.setState( {
@@ -574,12 +583,7 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 		if ( this.state.mutationFired ) {
 			this.props.refreshSitePlans( this.props.purchase.siteId );
 			this.props.clearPurchases();
-			const managePurchaseUrl = ( this.props.getManagePurchaseUrlFor ?? managePurchase )(
-				this.props.siteSlug,
-				this.props.purchaseId
-			);
-			const backupRedirect = this.props.purchaseListUrl ?? purchasesRoot;
-			page.redirect( managePurchaseUrl ? managePurchaseUrl + '?cancelled=true' : backupRedirect );
+			page.redirect( this.getCancelledRedirectUrl() );
 			return;
 		}
 
@@ -1217,13 +1221,7 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 						onSkipSurvey={
 							config.isEnabled( 'purchases/split-cancel-remove' ) && this.props.intent !== 'remove'
 								? () => {
-										const managePurchaseUrl = (
-											this.props.getManagePurchaseUrlFor ?? managePurchase
-										)( this.props.siteSlug, this.props.purchaseId );
-										const backupRedirect = this.props.purchaseListUrl ?? purchasesRoot;
-										page.redirect(
-											managePurchaseUrl ? managePurchaseUrl + '?cancelled=true' : backupRedirect
-										);
+										page.redirect( this.getCancelledRedirectUrl() );
 								  }
 								: undefined
 						}

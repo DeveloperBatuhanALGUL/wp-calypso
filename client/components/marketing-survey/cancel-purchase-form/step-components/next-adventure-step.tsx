@@ -87,10 +87,10 @@ export default function NextAdventureStep( props: Props ) {
 	}, [ nextAdventure, isPlan, onValidationChange ] );
 
 	const getHeaderText = () => {
-		if ( isCancelPostMutation && intent === 'auto-renew' ) {
-			return translate( 'Auto-renew turned off' );
-		}
 		if ( isOnlyStep ) {
+			if ( isCancelPostMutation && intent === 'auto-renew' ) {
+				return translate( 'Auto-renew disabled' );
+			}
 			return isCancelPostMutation
 				? translate( 'Cancelation confirmed' )
 				: translate( 'Share your feedback' );
