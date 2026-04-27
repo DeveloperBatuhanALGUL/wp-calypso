@@ -53,6 +53,7 @@ export function PurchaseNotice( { purchase }: { purchase: Purchase } ) {
 	// here. The URL search param is cleared immediately so that a refresh / back
 	// navigation falls through to the regular expiring notice.
 	const [ showCancelledNotice, setShowCancelledNotice ] = useState( Boolean( cancelled ) );
+	const [ cancelledSource ] = useState( () => ( cancelled ? source : undefined ) );
 	useEffect( () => {
 		if ( cancelled ) {
 			navigate( {
@@ -104,7 +105,7 @@ export function PurchaseNotice( { purchase }: { purchase: Purchase } ) {
 		return (
 			<PurchaseCancelledNotice
 				purchase={ purchase }
-				source={ source }
+				source={ cancelledSource }
 				onClose={ () => setShowCancelledNotice( false ) }
 			/>
 		);
