@@ -392,7 +392,6 @@ export const cancelPurchaseRoute = createRoute( {
 		loaderData?: {
 			purchase?: Purchase;
 			intent?: 'cancel' | 'remove';
-			source?: 'auto-renew-toggle';
 		};
 	} ) => {
 		// URL intent is authoritative — if the user clicked Remove on Purchase
@@ -433,12 +432,12 @@ export const cancelPurchaseRoute = createRoute( {
 			...( source ? { source } : {} ),
 		};
 	},
-	loaderDeps: ( { search } ) => ( { intent: search.intent, source: search.source } ),
-	loader: async ( { parentMatchPromise, deps: { intent, source } } ) => {
+	loaderDeps: ( { search } ) => ( { intent: search.intent } ),
+	loader: async ( { parentMatchPromise, deps: { intent } } ) => {
 		const parentMatch = await parentMatchPromise;
 		const purchase = parentMatch.loaderData?.purchase;
 		if ( ! purchase ) {
-			return { purchase: undefined, intent, source };
+			return { purchase: undefined, intent };
 		}
 		await Promise.all( [
 			queryClient.ensureQueryData( sitePurchasesQuery( purchase.blog_id ) ),
@@ -447,7 +446,7 @@ export const cancelPurchaseRoute = createRoute( {
 			queryClient.ensureQueryData( plansQuery() ),
 			queryClient.ensureQueryData( purchaseCancelFeaturesQuery( purchase.ID ) ),
 		] );
-		return { purchase, intent, source };
+		return { purchase, intent };
 	},
 } ).lazy( () =>
 	import( '../../me/billing-purchases/cancel-purchase' ).then( ( d ) =>

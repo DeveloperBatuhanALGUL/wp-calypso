@@ -477,6 +477,10 @@ function CancelPurchaseInner() {
 	const cancelSearch = useSearch( { from: cancelPurchaseRoute.fullPath } );
 	const intent = getCancelIntentFromSearch( cancelSearch );
 	const source = getCancelSourceFromSearch( cancelSearch );
+	const getCancelledSearch = () => ( {
+		cancelled: true as const,
+		...( source ? { source } : {} ),
+	} );
 	const displayVariant = getDisplayVariant( intent, flowType, source );
 	const mutationFlowType = getMutationFlowType( intent, purchase );
 
@@ -810,7 +814,7 @@ function CancelPurchaseInner() {
 							navigate( {
 								to: purchaseSettingsRoute.fullPath,
 								params: { purchaseId: purchase.ID },
-								search: { cancelled: true as const, ...( source ? { source } : {} ) },
+								search: getCancelledSearch(),
 							} );
 							return;
 						}
@@ -924,7 +928,7 @@ function CancelPurchaseInner() {
 					navigate( {
 						to: purchaseSettingsRoute.fullPath,
 						params: { purchaseId: purchase.ID },
-						search: { cancelled: true as const, ...( source ? { source } : {} ) },
+						search: getCancelledSearch(),
 					} )
 			: undefined;
 
@@ -1494,7 +1498,7 @@ function CancelPurchaseInner() {
 			navigate( {
 				to: purchaseSettingsRoute.fullPath,
 				params: { purchaseId: purchase.ID },
-				search: { cancelled: true as const, ...( source ? { source } : {} ) },
+				search: getCancelledSearch(),
 			} );
 			return;
 		}
