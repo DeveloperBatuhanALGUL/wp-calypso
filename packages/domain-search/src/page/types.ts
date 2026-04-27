@@ -80,6 +80,15 @@ export interface DomainSearchConfig {
 	vendor: DomainSuggestionQueryVendor;
 	skippable: boolean;
 	deemphasizedTlds: string[];
+	/**
+	 * TLDs to float to the top of the suggestions list, before partitioning
+	 * into featured/regular tiles. Order of the array is preserved: the first
+	 * matching suggestion becomes "Recommended", the second "Best alternative",
+	 * the rest anchor the top of the regular list. Non-promoted suggestions
+	 * retain their original relative order below. Unlike `allowedTlds`, this
+	 * does not restrict results — "show more" continues to reveal the full list.
+	 */
+	promotedTlds: string[];
 	priceRules: PriceRulesConfig;
 	includeDotBlogSubdomain: boolean;
 	allowsUsingOwnDomain: boolean;
@@ -122,6 +131,7 @@ export interface DomainSearchContextType
 			query: string,
 			params?: Partial< typeof domainSuggestionsQuery >
 		) => ReturnType< typeof domainSuggestionsQuery >;
+		promotedDomainSuggestions: ( query: string ) => ReturnType< typeof domainSuggestionsQuery >;
 		domainAvailability: ( domainName: string ) => ReturnType< typeof domainAvailabilityQuery >;
 		freeSuggestion: ( query: string ) => ReturnType< typeof freeSuggestionQuery >;
 	};

@@ -142,6 +142,10 @@ const DomainSearchStep: StepType< {
 				isHundredYearPlanFlow( flow ) || isHundredYearDomainFlow( flow )
 					? HUNDRED_YEAR_DOMAIN_TLDS
 					: allowedTlds,
+			deemphasizedTlds: isWooHostingSolutions ? [ 'blog', 'art', 'ninja', 'dev', 'me' ] : [],
+			// Float commerce-native TLDs to the top of the results for Woo traffic, without
+			// restricting the overall list — users can still click "show more" to see everything.
+			promotedTlds: isWooHostingSolutions ? [ 'shop', 'store', 'co', 'boutique', 'supply' ] : [],
 			includeOwnedDomainInSuggestions: true,
 			allowsUsingOwnDomain:
 				! isAIBuilderFlow( flow ) &&
@@ -149,7 +153,7 @@ const DomainSearchStep: StepType< {
 				! isHundredYearPlanFlow( flow ) &&
 				( isHundredYearDomainFlow( flow ) ? !! query : true ),
 		};
-	}, [ flow, isCiab, tldQuery, query ] );
+	}, [ flow, isCiab, isWooHostingSolutions, tldQuery, query ] );
 
 	const { submit } = navigation;
 

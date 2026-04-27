@@ -55,9 +55,29 @@ export const useSuggestion = ( domainName: string ) => {
 		...queries.domainAvailability( domainName ),
 	} );
 
-	const { data: suggestions } = useQuery( {
+	const { data: mainSuggestions } = useQuery( {
 		...queries.domainSuggestions( query ),
 	} );
+
+	// Flows with config.promotedTlds fire a secondary suggestions query to
+	// guarantee commerce-native TLDs appear. Domains from that query have to
+	// be resolvable here too, otherwise downstream components crash when they
+	// try to render a promoted suggestion the main cache doesn't know about.
+	const { data: promotedSuggestions } = useQuery( {
+		...queries.promotedDomainSuggestions( query ),
+	} );
+
+	const suggestions: DomainSuggestion[] | undefined = ( () => {
+		if ( ! mainSuggestions ) {
+			return undefined;
+		}
+		if ( ! promotedSuggestions?.length ) {
+			return mainSuggestions;
+		}
+		const seen = new Set( mainSuggestions.map( ( s ) => s.domain_name ) );
+		const extras = promotedSuggestions.filter( ( s ) => ! seen.has( s.domain_name ) );
+		return extras.length > 0 ? [ ...mainSuggestions, ...extras ] : mainSuggestions;
+	} )();
 
 	if ( suggestions && fqdnAvailability ) {
 		addAvailabilityAsSuggestion( suggestions, fqdnAvailability );
