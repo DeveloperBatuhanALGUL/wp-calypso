@@ -16,7 +16,7 @@ type CancellationReasonProps = {
 	reasonCodes: string[];
 	onChange: ChangeCallback;
 	onDetailsChange: DetailsChangeCallback;
-	intent?: 'cancel' | 'remove';
+	intent?: 'cancel' | 'remove' | 'auto-renew';
 };
 
 function CancellationReason( {
@@ -49,6 +49,11 @@ function CancellationReason( {
 	};
 
 	const getReasonLabel = () => {
+		if ( intent === 'auto-renew' ) {
+			return isCancelPostMutation
+				? translate( 'Why did you decide to turn off auto-renew?' )
+				: translate( 'Why would you like to turn off auto-renew?' );
+		}
 		if ( intent === 'remove' ) {
 			return translate( 'Why would you like to remove?' );
 		}
@@ -159,7 +164,7 @@ type FeedbackStepProps = {
 	onChangeCancellationReason: ChangeCallback;
 	onChangeCancellationReasonDetails: ChangeCallback;
 	onChangeImportFeedback?: ChangeCallback;
-	intent?: 'cancel' | 'remove';
+	intent?: 'cancel' | 'remove' | 'auto-renew';
 };
 
 export default function FeedbackStep( {
@@ -175,15 +180,21 @@ export default function FeedbackStep( {
 	const isCancelPostMutation =
 		config.isEnabled( 'purchases/split-cancel-remove' ) && intent !== 'remove';
 
+	const getHeaderText = () => {
+		if ( intent === 'auto-renew' && isCancelPostMutation ) {
+			return translate( 'Auto-renew turned off' );
+		}
+		if ( isCancelPostMutation ) {
+			return translate( 'Cancelation confirmed' );
+		}
+		return translate( 'Share your feedback' );
+	};
+
 	return (
 		<div className="cancel-purchase-form__feedback">
 			<FormattedHeader
 				brandFont
-				headerText={
-					isCancelPostMutation
-						? translate( 'Cancelation confirmed' )
-						: translate( 'Share your feedback' )
-				}
+				headerText={ getHeaderText() }
 				subHeaderText={ translate(
 					'Before you go, please answer a few quick questions to help us improve %(productName)s.',
 					{

@@ -9,15 +9,13 @@ import {
 } from './get-confirmation-copy';
 import type { CancellationFeature } from '@automattic/api-core';
 import type { Purchases } from '@automattic/data-stores';
-import type { DisplayVariant } from 'calypso/lib/purchases/utils';
-
 const CancelPurchaseFeatureList = ( {
 	purchase,
 	displayVariant,
 	cancellationFeatures,
 }: {
 	purchase: Purchases.Purchase;
-	displayVariant: DisplayVariant;
+	displayVariant: 'cancel' | 'remove' | 'auto-renew';
 	cancellationFeatures: CancellationFeature[];
 } ) => {
 	// When the server returns no features, fall back to a per-product-type item.

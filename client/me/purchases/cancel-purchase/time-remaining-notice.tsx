@@ -3,12 +3,10 @@ import Notice from 'calypso/components/notice';
 import { isPartnerPurchase } from 'calypso/lib/purchases';
 import { getTopNoticeCopy } from './get-confirmation-copy';
 import type { Purchases } from '@automattic/data-stores';
-import type { CancelIntent, DisplayVariant } from 'calypso/lib/purchases/utils';
-
 interface TimeRemainingNoticeProps {
 	purchase: Purchases.Purchase;
-	displayVariant: DisplayVariant;
-	intent: CancelIntent | null;
+	displayVariant: 'cancel' | 'remove' | 'auto-renew';
+	intent: 'cancel' | 'remove' | 'auto-renew' | null;
 }
 
 export default function TimeRemainingNotice( {

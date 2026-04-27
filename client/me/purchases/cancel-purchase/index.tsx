@@ -153,6 +153,7 @@ export interface CancelPurchaseProps {
 	purchaseListUrl?: string;
 	siteSlug: string;
 	intent?: 'cancel' | 'remove' | null;
+	source?: 'auto-renew-toggle' | null;
 }
 
 export type CancelPurchaseAllProps = CancelPurchaseProps &
@@ -178,10 +179,15 @@ function ContactSupportButton( {
 	const handleClick = useCallback( () => {
 		if ( canConnectToZendeskMessaging ) {
 			setNewMessagingChat( {
-				initialMessage:
-					displayVariant === 'remove'
-						? `I have questions about removing my ${ purchase.productName }. Can I speak with a human?`
-						: `I have questions about cancelling my ${ purchase.productName }. Can I speak with a human?`,
+				initialMessage: ( () => {
+					if ( displayVariant === 'remove' ) {
+						return `I have questions about removing my ${ purchase.productName }. Can I speak with a human?`;
+					}
+					if ( displayVariant === 'auto-renew' ) {
+						return `I have questions about turning off auto-renew for my ${ purchase.productName }. Can I speak with a human?`;
+					}
+					return `I have questions about cancelling my ${ purchase.productName }. Can I speak with a human?`;
+				} )(),
 				siteUrl: purchase.siteUrl,
 				siteId: String( purchase.siteId ),
 			} );
@@ -881,7 +887,15 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 			siteSlug,
 			cancelBundledDomain: this.state.cancelBundledDomain,
 			purchaseListUrl: purchaseListUrl ?? purchasesRoot,
-			displayVariant: this.props.intent === 'remove' ? ( 'remove' as const ) : undefined,
+			displayVariant: ( (): 'remove' | 'auto-renew' | undefined => {
+				if ( this.props.intent === 'remove' ) {
+					return 'remove';
+				}
+				if ( this.props.source === 'auto-renew-toggle' ) {
+					return 'auto-renew';
+				}
+				return undefined;
+			} )(),
 			cancelIntentOverride:
 				urlIntentOverride ??
 				( this.shouldUseAutoRenewFlow( purchase ) ? ( 'autorenew' as const ) : undefined ),
@@ -909,9 +923,15 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 
 	renderKeepSubscriptionButton = () => {
 		const { purchase, siteSlug } = this.props;
+		let keepIntent: 'cancel' | 'remove' | 'auto-renew' = 'cancel';
+		if ( this.props.intent === 'remove' ) {
+			keepIntent = 'remove';
+		} else if ( this.props.source === 'auto-renew-toggle' ) {
+			keepIntent = 'auto-renew';
+		}
 		const label = getButtonLabels( {
 			purchase,
-			intent: this.props.intent === 'remove' ? 'remove' : 'cancel',
+			intent: keepIntent,
 		} ).secondary;
 
 		return (
@@ -941,7 +961,12 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 		const isSplitEnabled = config.isEnabled( 'purchases/split-cancel-remove' );
 		const cancellationFeatures = this.state.serverCancellationFeatures ?? [];
 
-		const displayVariant: 'cancel' | 'remove' = intent === 'remove' ? 'remove' : 'cancel';
+		let displayVariant: 'cancel' | 'remove' | 'auto-renew' = 'cancel';
+		if ( intent === 'remove' ) {
+			displayVariant = 'remove';
+		} else if ( this.props.source === 'auto-renew-toggle' ) {
+			displayVariant = 'auto-renew';
+		}
 		const checkboxLabel = getCheckboxLabel();
 
 		// Check if we should show domain options inline (when they don't need radio buttons)
@@ -991,9 +1016,15 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 				<div className="cancel-purchase__support">
 					<p className="cancel-purchase__support-heading">
 						<strong>
-							{ displayVariant === 'remove'
-								? translate( 'Questions before you remove?' )
-								: translate( 'Have a question before canceling?' ) }
+							{ ( () => {
+								if ( displayVariant === 'remove' ) {
+									return translate( 'Questions before you remove?' );
+								}
+								if ( displayVariant === 'auto-renew' ) {
+									return translate( 'Have a question before turning off auto-renew?' );
+								}
+								return translate( 'Have a question before canceling?' );
+							} )() }
 						</strong>
 					</p>
 					<p className="cancel-purchase__support-text">
@@ -1140,7 +1171,12 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 		const { purchase, isJetpack, isAkismet, isDomainRegistrationPurchase, intent } = this.props;
 		const { siteName, siteId } = purchase;
 
-		const displayVariant: 'cancel' | 'remove' = intent === 'remove' ? 'remove' : 'cancel';
+		let displayVariant: 'cancel' | 'remove' | 'auto-renew' = 'cancel';
+		if ( intent === 'remove' ) {
+			displayVariant = 'remove';
+		} else if ( this.props.source === 'auto-renew-toggle' ) {
+			displayVariant = 'auto-renew';
+		}
 		const heading = getCancellationHeading( { purchase, intent: displayVariant } );
 
 		// When a plan has an included domain that can be cancelled together,
@@ -1177,7 +1213,7 @@ class CancelPurchase extends Component< CancelPurchaseAllProps, CancelPurchaseSt
 						cancellationInProgress={ this.state.isLoading }
 						downgradeClick={ this.downgradeClick }
 						freeMonthOfferClick={ this.freeMonthOfferClick }
-						intent={ this.props.intent }
+						intent={ displayVariant }
 						onSkipSurvey={
 							config.isEnabled( 'purchases/split-cancel-remove' ) && this.props.intent !== 'remove'
 								? () => {

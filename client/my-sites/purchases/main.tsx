@@ -142,10 +142,12 @@ export function PurchaseCancel( {
 	purchaseId,
 	siteSlug,
 	intent,
+	source,
 }: {
 	purchaseId: number;
 	siteSlug: string;
 	intent?: 'cancel' | 'remove' | null;
+	source?: 'auto-renew-toggle' | null;
 } ) {
 	const translate = useTranslate();
 	const logPurchasesError = useLogPurchasesError( 'site level purchase cancel load error' );
@@ -165,6 +167,7 @@ export function PurchaseCancel( {
 					purchaseId={ purchaseId }
 					siteSlug={ siteSlug }
 					intent={ intent }
+					source={ source }
 					getManagePurchaseUrlFor={ getManagePurchaseUrlFor }
 					getConfirmCancelDomainUrlFor={ getConfirmCancelDomainUrlFor }
 					purchaseListUrl={ getPurchaseListUrlFor( siteSlug ) }

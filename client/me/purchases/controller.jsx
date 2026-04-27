@@ -95,6 +95,8 @@ export function addCreditCard( context, next ) {
 export async function cancelPurchase( context, next ) {
 	const rawIntent = context.query?.intent;
 	const intent = rawIntent === 'cancel' || rawIntent === 'remove' ? rawIntent : null;
+	const rawSource = context.query?.source;
+	const source = rawSource === 'auto-renew-toggle' ? rawSource : null;
 	// Match the browser-tab/page title to the button the user clicked on
 	// Purchase Settings — "Remove" for Remove, "Cancel Purchase" otherwise.
 	const pageTitle =
@@ -115,6 +117,7 @@ export async function cancelPurchase( context, next ) {
 						purchaseId={ purchaseId }
 						siteSlug={ context.params.site }
 						intent={ intent }
+						source={ source }
 					/>
 				</Main>
 			</PurchasesWrapper>

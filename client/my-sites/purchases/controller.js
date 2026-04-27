@@ -42,12 +42,15 @@ export const purchaseDetails = ( context, next ) => {
 export const purchaseCancel = ( context, next ) => {
 	const rawIntent = context.query?.intent;
 	const intent = rawIntent === 'cancel' || rawIntent === 'remove' ? rawIntent : null;
+	const rawSource = context.query?.source;
+	const source = rawSource === 'auto-renew-toggle' ? rawSource : null;
 
 	context.primary = (
 		<PurchaseCancel
 			siteSlug={ context.params.site }
 			purchaseId={ parseInt( context.params.purchaseId, 10 ) }
 			intent={ intent }
+			source={ source }
 		/>
 	);
 	next();

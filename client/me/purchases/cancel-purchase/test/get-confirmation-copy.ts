@@ -195,6 +195,30 @@ describe( 'getButtonLabels (legacy)', () => {
 	} );
 } );
 
+describe( 'auto-renew intent (legacy)', () => {
+	test( 'getCancellationHeading → "Turn off auto-renew"', () => {
+		expect( getCancellationHeading( { purchase: makePurchase(), intent: 'auto-renew' } ) ).toBe(
+			'Turn off auto-renew'
+		);
+	} );
+	test( 'getButtonLabels → "Turn off auto-renew" / "Keep auto-renew on"', () => {
+		expect( getButtonLabels( { purchase: makePurchase(), intent: 'auto-renew' } ) ).toEqual( {
+			primary: 'Turn off auto-renew',
+			secondary: 'Keep auto-renew on',
+		} );
+	} );
+	test( 'getTopNoticeCopy → returns duration notice (not null)', () => {
+		const copy = getTopNoticeCopy( {
+			purchase: makePurchase( {
+				expiryDate: moment().add( 30, 'days' ).toISOString(),
+			} ),
+			intent: 'auto-renew',
+		} );
+		expect( copy ).not.toBeNull();
+		expect( copy ).toMatch( /^Your plan features will be available for another /i );
+	} );
+} );
+
 describe( 'getFallbackLossItems (legacy)', () => {
 	test( 'plan', () => {
 		expect(

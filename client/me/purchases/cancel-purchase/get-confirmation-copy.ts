@@ -131,13 +131,18 @@ export function formatTimeRemaining(
 	} ) as string;
 }
 
+type ConfirmationIntent = CancelIntent | 'auto-renew';
+
 type ConfirmationCopyArgs = {
 	purchase: Purchases.Purchase;
-	intent: CancelIntent;
+	intent: ConfirmationIntent;
 	skipSurvey?: boolean;
 };
 
 export function getCancellationHeading( { purchase, intent }: ConfirmationCopyArgs ): string {
+	if ( intent === 'auto-renew' ) {
+		return translate( 'Turn off auto-renew' );
+	}
 	if ( intent === 'cancel' ) {
 		return translate( 'Cancel subscription' );
 	}
@@ -167,7 +172,7 @@ export function getCancellationHeading( { purchase, intent }: ConfirmationCopyAr
 }
 
 export function getTopNoticeCopy( { purchase, intent }: ConfirmationCopyArgs ): string | null {
-	if ( intent !== 'cancel' ) {
+	if ( intent !== 'cancel' && intent !== 'auto-renew' ) {
 		return null;
 	}
 	if ( ! purchase.expiryDate ) {
@@ -418,6 +423,12 @@ export function getButtonLabels( { purchase, intent, skipSurvey }: ConfirmationC
 					secondary: translate( 'Keep subscription' ),
 				};
 		}
+	}
+	if ( intent === 'auto-renew' ) {
+		return {
+			primary: translate( 'Turn off auto-renew' ),
+			secondary: translate( 'Keep auto-renew on' ),
+		};
 	}
 	// Cancel intent: always "Cancel subscription" / "Keep subscription". Under the
 	// split flag the mutation fires on the confirmation click itself, so the button
