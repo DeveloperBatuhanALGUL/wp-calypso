@@ -1,4 +1,5 @@
 import AsyncLoad from 'calypso/components/async-load';
+import AppleIcon from 'calypso/components/social-icons/apple';
 
 interface MagicLoginEmailIconProps {
 	icon: string;
@@ -7,16 +8,7 @@ interface MagicLoginEmailIconProps {
 export function MagicLoginEmailIcon( { icon }: MagicLoginEmailIconProps ) {
 	switch ( icon ) {
 		case 'apple':
-			return (
-				<AsyncLoad
-					require={ () =>
-						import(
-							/* webpackChunkName: "async-load-calypso-components-social-icons-apple" */ 'calypso/components/social-icons/apple'
-						)
-					}
-					placeholder={ null }
-				/>
-			);
+			return <AppleIcon />;
 		case 'gmail':
 			return (
 				<AsyncLoad
