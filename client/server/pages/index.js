@@ -200,7 +200,6 @@ function getDefaultContext( request, response, entrypoint = 'entry-main' ) {
 		preferencesHelper,
 		storeSandboxHelper,
 		featuresHelper,
-		devDocsURL: '/devdocs',
 		store: reduxStore,
 		target: 'evergreen',
 		useTranslationChunks:
@@ -224,7 +223,6 @@ function getDefaultContext( request, response, entrypoint = 'entry-main' ) {
 	performanceMark( request.context, 'setup environments', true );
 	if ( calypsoEnv === 'wpcalypso' ) {
 		context.badge = calypsoEnv;
-		context.devDocs = true;
 		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		// this is for calypso.live, so that branchName can be available while rendering the page
 		if ( request.query.branch ) {
@@ -244,7 +242,6 @@ function getDefaultContext( request, response, entrypoint = 'entry-main' ) {
 
 	if ( calypsoEnv === 'development' ) {
 		context.badge = 'dev';
-		context.devDocs = true;
 		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		context.branchName = getCurrentBranchName();
 		context.commitChecksum = getCurrentCommitShortChecksum();
