@@ -35,12 +35,12 @@
 	},
 	"private": true,
 	"dependencies": {
-		"@wordpress/components": "^29.0.0",
-		"@wordpress/compose": "^7.23.0",
-		"@wordpress/icons": "^10.23.0"
+		"@wordpress/components": "^32.6.0",
+		"@wordpress/compose": "^7.44.0",
+		"@wordpress/icons": "^12.2.0"
 	},
 	"peerDependencies": {
-		"@wordpress/data": "^10.23.0",
+		"@wordpress/data": "^10.44.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
 	},
