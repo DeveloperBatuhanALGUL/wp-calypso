@@ -246,8 +246,9 @@ class Document extends Component {
 						<script nonce={ inlineScriptNonce } src={ `/calypso/${ target }/runtime.js` } />
 					) }
 					{ env !== 'development' &&
-						manifests.map( ( manifest ) => (
+						manifests.map( ( manifest, index ) => (
 							<script
+								key={ `manifest-${ index }` }
 								nonce={ inlineScriptNonce }
 								dangerouslySetInnerHTML={ {
 									__html: manifest,
@@ -287,6 +288,21 @@ class Document extends Component {
 						<script key={ translationChunk } nonce={ inlineScriptNonce } src={ translationChunk } />
 					) ) }
 
+					{ viteDev && (
+						<script
+							key="@vitejs/plugin-react/preamble"
+							nonce={ inlineScriptNonce }
+							type="module"
+							dangerouslySetInnerHTML={ {
+								__html: `
+									import { injectIntoGlobalHook } from "/@react-refresh";
+									injectIntoGlobalHook( window );
+									window.$RefreshReg$ = () => {};
+									window.$RefreshSig$ = () => ( type ) => type;
+								`,
+							} }
+						/>
+					) }
 					{ viteDev && (
 						<script
 							key="@vite/client"

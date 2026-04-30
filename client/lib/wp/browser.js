@@ -8,6 +8,7 @@ import wpcomXhrWrapper, { jetpack_site_xhr_wrapper } from 'calypso/lib/wpcom-xhr
 import { injectFingerprint } from './handlers/fingerprint';
 import { injectGuestSandboxTicketHandler } from './handlers/guest-sandbox-ticket';
 import { injectLocalization } from './localization';
+import { makeOffline } from './offline-library';
 
 const debug = debugFactory( 'calypso:wp' );
 
@@ -37,7 +38,7 @@ if ( config.isEnabled( 'oauth' ) ) {
 wpcom = wpcomSupport( wpcom );
 
 if ( 'development' === process.env.NODE_ENV ) {
-	require( './offline-library' ).makeOffline( wpcom );
+	makeOffline( wpcom );
 
 	// expose wpcom global var in development mode
 	window.wpcom = wpcom;
