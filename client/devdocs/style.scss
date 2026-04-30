@@ -40,16 +40,15 @@ a:has(.devdocs__title) {
 		font-size: $font-body;
 		color: var(--color-text);
 		margin-top: 4px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 
 		mark {
 			background: color-mix(in srgb, var(--color-primary-light) 40%, transparent);
 			padding: 2px;
 			border-radius: 2px;
 		}
-
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;
 	}
 }
 

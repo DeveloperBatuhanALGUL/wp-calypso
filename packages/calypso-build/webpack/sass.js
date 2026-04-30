@@ -41,7 +41,6 @@ module.exports.loader = ( { includePaths, prelude, postCssOptions } ) => ( {
 				sassOptions: {
 					loadPaths: includePaths,
 					quietDeps: true,
-					silenceDeprecations: [ 'mixed-decls' ],
 				},
 			},
 		},
