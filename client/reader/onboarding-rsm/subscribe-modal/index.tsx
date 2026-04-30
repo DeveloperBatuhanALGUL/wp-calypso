@@ -9,10 +9,12 @@ import React, { useMemo, useState, ComponentType, useEffect, useCallback } from 
 import { useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import ConnectedReaderSubscriptionListItem from 'calypso/blocks/reader-subscription-list-item/connected';
+import { useFollowedReaderTags } from 'calypso/data/reader/use-reader-tags';
 import wpcom from 'calypso/lib/wp';
 import { trackScrollPage } from 'calypso/reader/controller-helper';
 import { READER_ONBOARDING_TRACKS_EVENT_PREFIX } from 'calypso/reader/onboarding-rsm/constants';
 import { curatedBlogs } from 'calypso/reader/onboarding-rsm/curated-blogs';
+import { StepIndicator } from 'calypso/reader/onboarding-rsm/step-indicator';
 import Stream from 'calypso/reader/stream';
 import { useDispatch, useStore } from 'calypso/state';
 import { isCurrentUserEmailVerified } from 'calypso/state/current-user/selectors';
@@ -23,7 +25,6 @@ import {
 	clearStream,
 	requestPaginatedStream,
 } from 'calypso/state/reader/streams/actions';
-import { getReaderFollowedTags } from 'calypso/state/reader/tags/selectors';
 import SubscribeVerificationNudge from './verificationNudge';
 
 import './style.scss';
@@ -63,11 +64,12 @@ interface StreamProps {
 const TypedStream: ComponentType< StreamProps > = Stream as ComponentType< StreamProps >;
 
 const SubscribeModal: React.FC< SubscribeModalProps > = ( { isOpen, onClose } ) => {
-	const followedTags = useSelector( getReaderFollowedTags );
+	const { data: followedTags } = useFollowedReaderTags();
 
-	const followedTagSlugs = useMemo( () => {
-		return ( followedTags || [] ).map( ( tag ) => tag.slug );
-	}, [ followedTags ] );
+	const followedTagSlugs = useMemo(
+		() => followedTags?.map( ( tag ) => tag.slug ) ?? [],
+		[ followedTags ]
+	);
 
 	const promptVerification = ! useSelector( isCurrentUserEmailVerified );
 
@@ -374,19 +376,26 @@ const SubscribeModal: React.FC< SubscribeModalProps > = ( { isOpen, onClose } ) 
 							</div>
 						</div>
 						<div className="reader-onboarding-modal__footer">
-							<HStack justify="right" className="reader-onboarding-modal__footer-actions">
-								<Button __next40pxDefaultSize variant="tertiary" onClick={ handleClose }>
-									{ __( 'Cancel' ) }
-								</Button>
-								<Button
-									__next40pxDefaultSize
-									onClick={ handleContinue }
-									variant="primary"
-									disabled={ promptVerification }
-									accessibleWhenDisabled
+							<HStack justify="space-between" className="reader-onboarding-modal__footer-actions">
+								<StepIndicator totalSteps={ 3 } currentStep={ 3 } />
+								<HStack
+									spacing={ 2 }
+									justify="right"
+									className="reader-onboarding-modal__footer-buttons"
 								>
-									{ __( 'Continue' ) }
-								</Button>
+									<Button __next40pxDefaultSize variant="tertiary" onClick={ handleClose }>
+										{ __( 'Cancel' ) }
+									</Button>
+									<Button
+										__next40pxDefaultSize
+										onClick={ handleContinue }
+										variant="primary"
+										disabled={ promptVerification }
+										accessibleWhenDisabled
+									>
+										{ __( 'Continue' ) }
+									</Button>
+								</HStack>
 							</HStack>
 						</div>
 					</div>

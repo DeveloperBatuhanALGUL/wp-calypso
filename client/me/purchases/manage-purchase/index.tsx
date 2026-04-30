@@ -84,6 +84,10 @@ import CancelPurchaseForm from 'calypso/components/marketing-survey/cancel-purch
 import Notice from 'calypso/components/notice';
 import NoticeAction from 'calypso/components/notice/notice-action';
 import VerticalNavItem from 'calypso/components/vertical-nav/item';
+import {
+	getCancelButtonCopy,
+	getRemoveButtonCopy,
+} from 'calypso/dashboard/me/billing-purchases/purchase-settings/get-cancel-remove-copy';
 import reinstallPlugins from 'calypso/data/marketplace/reinstall-plugins-api';
 import HundredYearPlanLogo from 'calypso/landing/stepper/declarative-flow/internals/steps-repository/hundred-year-plan-step-wrapper/hundred-year-plan-logo';
 import { recordTracksEvent } from 'calypso/lib/analytics/tracks';
@@ -143,6 +147,7 @@ import {
 	hasLoadedUserPurchasesFromServer,
 	hasLoadedSitePurchasesFromServer,
 	getRenewableSitePurchases,
+	willAtomicSiteRevertAfterPurchaseDeactivation,
 } from 'calypso/state/purchases/selectors';
 import getCurrentRoute from 'calypso/state/selectors/get-current-route';
 import getPrimaryDomainBySiteId from 'calypso/state/selectors/get-primary-domain-by-site-id';
@@ -174,7 +179,6 @@ import {
 	getCancelPurchaseSurveyCompletedPreferenceKey,
 } from '../utils';
 import { classifyPurchaseForCopy } from './classify-purchase-for-copy';
-import { getCancelButtonCopy, getRemoveButtonCopy } from './get-cancel-remove-copy';
 import PurchaseNotice from './notices';
 import PurchasePlanDetails from './plan-details';
 import PurchaseMeta from './purchase-meta';
@@ -191,6 +195,11 @@ import type { ProductListItem } from 'calypso/state/products-list/selectors/get-
 import type { Theme } from 'calypso/types';
 
 import './style.scss';
+
+const loadProductPlanOverlapNotices = () =>
+	import(
+		/* webpackChunkName: "async-load-calypso-blocks-product-plan-overlap-notices" */ 'calypso/blocks/product-plan-overlap-notices'
+	);
 
 export interface ManagePurchaseProps {
 	cardTitle?: string;
@@ -222,6 +231,7 @@ export interface ManagePurchaseConnectedProps {
 	isAtomicSite?: boolean | null;
 	isDomainOnlySite?: boolean | null;
 	isProductOwner?: boolean | null;
+	willAtomicSiteRevert?: boolean;
 	isPurchaseTheme?: boolean | null;
 	plan: FilteredPlan | false | undefined;
 	primaryDomain?: ResponseDomain | null;
@@ -796,54 +806,25 @@ class ManagePurchase extends Component<
 				category: classifyPurchaseForCopy( purchase ),
 				productName: purchase.productName,
 				hasRefund: canRefund,
-				translate,
 			} );
 
-			// Refundable (dual-button on active, or just-cancelled still in window):
-			// route through the cancel URL so the existing refund flow runs. The
-			// inline <RemovePurchase> component skips refund processing AND hides
-			// itself when `hasAmountAvailableToRefund` is true, so we can't use it
-			// for any refundable state. A future PR replaces this hop with a
-			// dedicated refund confirmation screen.
-			if ( canRefund ) {
-				const link = ( this.props.getCancelPurchaseUrlFor ?? cancelPurchase )(
-					this.props.siteSlug,
-					purchase.id
-				);
-				return (
-					<CompactCard href={ link } className="remove-purchase__card">
-						<Icon icon={ trash } className="card__icon" />
-						{ removeCopy.label }
-						{ this.renderActionDetailsText( removeCopy.description, {
-							className: 'manage-purchase__refund-text',
-						} ) }
-					</CompactCard>
-				);
-			}
-
-			// Non-refundable: auto-renew is off (enforced by the early return above)
-			// and there's no refund to process. Use <RemovePurchase> for the direct
-			// DELETE path.
+			// All removes route through the unified confirmation screen via
+			// ?intent=remove. isDataValid on the cancel page now accepts any
+			// intent=remove purchase under the flag, so non-refundable and
+			// domain removes both land on the confirmation screen correctly.
+			const baseLink = ( this.props.getCancelPurchaseUrlFor ?? cancelPurchase )(
+				this.props.siteSlug,
+				purchase.id
+			);
+			const link = `${ baseLink }?intent=remove`;
 			return (
-				<RemovePurchase
-					hasLoadedSites={ hasLoadedSites }
-					hasLoadedUserPurchasesFromServer={ this.props.hasLoadedPurchasesFromServer }
-					hasNonPrimaryDomainsFlag={ hasNonPrimaryDomainsFlag }
-					hasSetupAds={ this.props.hasSetupAds }
-					hasCustomPrimaryDomain={ hasCustomPrimaryDomain }
-					activeSubscriptions={ this.getActiveMarketplaceSubscriptions() }
-					site={ site }
-					purchase={ purchase }
-					purchaseListUrl={ purchaseListUrl ?? purchasesRoot }
-					linkIcon="chevron-right"
-					skipRemovePlanSurvey={ isPlanPurchase && hasCompletedCancelPurchaseSurvey }
-				>
+				<CompactCard href={ link } className="remove-purchase__card">
 					<Icon icon={ trash } className="card__icon" />
 					{ removeCopy.label }
 					{ this.renderActionDetailsText( removeCopy.description, {
 						className: 'manage-purchase__refund-text',
 					} ) }
-				</RemovePurchase>
+				</CompactCard>
 			);
 		}
 
@@ -1059,10 +1040,13 @@ class ManagePurchase extends Component<
 			return null;
 		}
 
-		const link = ( this.props.getCancelPurchaseUrlFor ?? cancelPurchase )(
+		const baseLink = ( this.props.getCancelPurchaseUrlFor ?? cancelPurchase )(
 			this.props.siteSlug,
 			id
 		);
+		// Under flag, carry the user's intent through to the confirmation screen so
+		// it renders the matching variant (Cancel copy + disable-auto-renew mutation).
+		const link = isSplitEnabled ? `${ baseLink }?intent=cancel` : baseLink;
 		const canRefund = hasAmountAvailableToRefund( purchase );
 
 		if ( ! canRefund && isDomainTransfer( purchase ) ) {
@@ -1085,7 +1069,6 @@ class ManagePurchase extends Component<
 					category: classifyPurchaseForCopy( purchase ),
 					productName: purchase.productName,
 					expiryDateFormatted: expiryDateDisplay.replace( / /g, '\u00A0' ),
-					translate,
 			  } )
 			: null;
 
@@ -1096,7 +1079,7 @@ class ManagePurchase extends Component<
 				link_text: cancelCopy ? cancelCopy.label : getCancelPurchaseNavText( purchase, translate ),
 			} );
 
-			if ( this.shouldShowWordAdsEligibilityWarning() ) {
+			if ( ! isSplitEnabled && this.shouldShowWordAdsEligibilityWarning() ) {
 				event.preventDefault();
 				this.showWordAdsEligibilityWarningDialog( link );
 			}
@@ -1606,6 +1589,7 @@ class ManagePurchase extends Component<
 			getAddNewPaymentMethodUrlFor,
 			getChangePaymentMethodUrlFor,
 			isProductOwner,
+			willAtomicSiteRevert,
 		} = this.props;
 
 		// If there is no purchase, query to load the purchases
@@ -1679,6 +1663,7 @@ class ManagePurchase extends Component<
 						changePaymentMethodPath={ changePaymentMethodPath }
 						getManagePurchaseUrlFor={ getManagePurchaseUrlFor ?? managePurchase }
 						isProductOwner={ isProductOwner }
+						willAtomicSiteRevert={ willAtomicSiteRevert }
 						getAddNewPaymentMethodUrlFor={
 							getAddNewPaymentMethodUrlFor ?? getAddNewPaymentMethodPath
 						}
@@ -1817,7 +1802,7 @@ function PlanOverlapNotice( {
 		}
 		return (
 			<AsyncLoad
-				require="calypso/blocks/product-plan-overlap-notices"
+				require={ loadProductPlanOverlapNotices }
 				placeholder={ null }
 				plans={ JETPACK_PLANS }
 				products={ JETPACK_PRODUCTS_LIST }
@@ -1832,7 +1817,7 @@ function PlanOverlapNotice( {
 	}
 	return (
 		<AsyncLoad
-			require="calypso/blocks/product-plan-overlap-notices"
+			require={ loadProductPlanOverlapNotices }
 			placeholder={ null }
 			plans={ JETPACK_PLANS }
 			products={ JETPACK_PRODUCTS_LIST }
@@ -1932,6 +1917,9 @@ export default connect( ( state: IAppState, props: ManagePurchaseProps ) => {
 		isAtomicSite: isSiteAtomic( state, siteId ),
 		isDomainOnlySite: purchase && isDomainOnly( state, purchase.siteId ),
 		isProductOwner,
+		willAtomicSiteRevert: purchase
+			? willAtomicSiteRevertAfterPurchaseDeactivation( state, purchase.id, [] )
+			: false,
 		isPurchaseTheme,
 		plan: isPurchasePlan && applyTestFiltersToPlansList( purchase.productSlug, undefined ),
 		primaryDomain: primaryDomain,

@@ -12,6 +12,8 @@
  */
 
 import { getAgentManager, UIMessage } from '@automattic/agenttic-client';
+import { isReaderChatAgent } from './is-reader-chat-agent';
+import { useReaderFollowupSuggestions } from './reader-followup-hook';
 import type { ImageUploadHook } from '../hooks/use-image-upload';
 import type { ToolProvider, ContextProvider, Suggestion, BigSkyMessage } from '../types';
 import type { UseAgentChatReturn } from '@automattic/agenttic-client';
@@ -120,19 +122,26 @@ export type UseCheckpointHook = () => UseCheckpointReturn;
 
 export type { ImageUploadHook };
 
-/**
- * Optional capability flags that a provider can declare to opt into
- * AM chat-dock features that aren't on by default. Merged across providers
- * via logical OR, so any provider that needs a feature gets it.
- */
+/** Optional flags providers can declare to opt into AM chat-dock features. */
 export interface ProviderCapabilities {
-	/**
-	 * Whether the "Split screen sidebar" menu item should appear in the chat
-	 * header. Declared by providers whose host surface can cope with a 50vw
-	 * sidebar (e.g. jetpack-ai-sidebar's post editor). Other AM consumers
-	 * leave this unset / false so their layouts aren't affected.
-	 */
+	/** Adds the "Split screen sidebar" chat-header menu item when true. */
 	supportsSplitScreen?: boolean;
+}
+
+/**
+ * OR-merge a provider's `capabilities` into the running map. Works on both
+ * plain objects and lazy Proxies (probed by direct key access, not iteration).
+ */
+export function mergeCapabilitiesInto( merged: ProviderCapabilities, capabilities: unknown ): void {
+	if ( ! capabilities || typeof capabilities !== 'object' ) {
+		return;
+	}
+	const caps = capabilities as ProviderCapabilities;
+	// Strict `=== true` because `capabilities` arrives as `unknown` from
+	// runtime-imported modules; a stray `'false'` string would otherwise opt in.
+	if ( caps.supportsSplitScreen === true ) {
+		merged.supportsSplitScreen = true;
+	}
 }
 
 export interface LoadedProviders {
@@ -163,8 +172,22 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 	const agentProviders =
 		typeof agentsManagerData !== 'undefined' ? agentsManagerData?.agentProviders || [] : [];
 
+	// Only the public reader-chat entry registers the follow-up chip globals
+	// (`window.__jetpackReaderFollowupChips` / `reader-chat-followups-updated`).
+	// Register the bridge for every reader-chat agent variant that uses the
+	// public reader-chat entry.
+	const registerReaderFollowups =
+		typeof window !== 'undefined' &&
+		isReaderChatAgent(
+			( window as unknown as { agentsManagerData?: { agentId?: string } } ).agentsManagerData
+				?.agentId
+		);
+
 	if ( agentProviders.length === 0 ) {
-		return {};
+		// Even with no external agentProviders, register the reader-chat
+		// follow-up hook if this host is reader-chat. Previously this path
+		// early-returned an empty object, so the hook never registered.
+		return registerReaderFollowups ? { useSuggestions: useReaderFollowupSuggestions } : {};
 	}
 
 	let mergedToolProvider: ToolProvider | undefined;
@@ -179,8 +202,7 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 	let mergedSiteBuildUtils: SiteBuildUtils | undefined;
 	let mergedImageUpload: ImageUploadHook | undefined;
 	let mergedUseCheckpoint: UseCheckpointHook | undefined;
-	// Capabilities are OR-merged across providers — any provider opting
-	// into a feature enables it for the whole dock session.
+	// OR-merged across all providers.
 	const mergedCapabilities: ProviderCapabilities = {};
 
 	// Collect exports that need to be merged across all providers.
@@ -189,6 +211,12 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 	const allAbilitiesSetups: AbilitiesSetupHook[] = [];
 	const allUseSuggestions: UseSuggestionsHook[] = [];
 	const allGetEmptyViewSuggestions: ( () => Suggestion[] )[] = [];
+
+	// Also add reader-chat hook to the merge path when there ARE other
+	// providers.
+	if ( registerReaderFollowups ) {
+		allUseSuggestions.push( useReaderFollowupSuggestions );
+	}
 
 	// Load all providers in parallel to avoid serializing network/module fetches.
 	// Results are processed in registration order to preserve first-write-wins semantics.
@@ -254,19 +282,7 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 			mergedUseCheckpoint = module.useCheckpoint;
 		}
 
-		// OR-merge capability flags: any provider that opts in enables the
-		// feature across the dock. `module.capabilities` can be a plain
-		// object OR a lazy `Proxy` (see e.g. `jetpack-ai-sidebar.provider.mjs`
-		// which wraps a runtime `window.__JetpackAIProvider.capabilities` lookup).
-		// `Object.entries()` returns `[]` on a Proxy with an empty target, so we
-		// must probe each known capability key by direct property access to
-		// hit the Proxy's `get` trap.
-		if ( module.capabilities && typeof module.capabilities === 'object' ) {
-			const caps = module.capabilities as ProviderCapabilities;
-			if ( caps.supportsSplitScreen ) {
-				mergedCapabilities.supportsSplitScreen = true;
-			}
-		}
+		mergeCapabilitiesInto( mergedCapabilities, module.capabilities );
 	}
 
 	// Merge toolProviders: first-write-wins by ability name, matching the
@@ -406,6 +422,7 @@ export async function loadExternalProviders(): Promise< LoadedProviders > {
 		siteBuildUtils: mergedSiteBuildUtils,
 		useImageUpload: mergedImageUpload,
 		useCheckpoint: mergedUseCheckpoint,
-		capabilities: mergedCapabilities,
+		// Match peer fields: undefined when no provider opted in.
+		capabilities: Object.keys( mergedCapabilities ).length ? mergedCapabilities : undefined,
 	};
 }

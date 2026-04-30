@@ -123,9 +123,8 @@ export function setIsLoading( isLoading: boolean ) {
 }
 
 /**
- * Toggle split-screen mode (docked sidebar grows to cover ~50% of the
- * viewport). Session-scoped — intentionally not persisted to user prefs so
- * the expanded layout doesn't follow the user into unrelated contexts.
+ * Set split-screen mode (docked sidebar grows to cover ~50% of the viewport).
+ * Session-scoped — intentionally not persisted to user prefs.
  */
 export function setIsSplitScreen( isSplitScreen: boolean ) {
 	return {
